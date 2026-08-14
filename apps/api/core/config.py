@@ -75,6 +75,16 @@ class Settings(BaseSettings):
     min_ctr: Decimal = Decimal("0.015")
     min_conversion_signal: int = 1
 
+    seo_taxonomy_path: Path = Path("templates/seo_taxonomy.json")
+    affiliate_directory_path: Path = Path("templates/affiliate_programs.json")
+    seo_min_experiment_impressions: int = 500
+    seo_min_experiment_clicks: int = 20
+    seo_min_experiment_conversions: int = 3
+    seo_keyword_max_repetitions: int = 2
+    opportunity_profit_confidence_threshold: Decimal = Decimal("65")
+    estimated_media_cost_per_content: Decimal = Decimal("0.03")
+    infrastructure_cost_per_content: Decimal = Decimal("0.10")
+
     @field_validator("timezone")
     @classmethod
     def valid_timezone(cls, value: str) -> str:

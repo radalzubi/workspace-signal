@@ -14,7 +14,8 @@ from sqlalchemy.orm import Session
 
 from apps.api.core.config import Settings
 from apps.api.db.models import AIUsage, ContentIdea, ContentVariant, Deal
-from apps.api.schemas import ContentStrategy
+from apps.api.schemas import ContentBriefPlan, ContentStrategy
+from apps.api.services.seo import build_content_brief, generate_seo_description, persist_content_brief
 
 PROHIBITED_CLAIMS = {
     "best ever",
@@ -28,12 +29,22 @@ PROHIBITED_CLAIMS = {
 
 class ContentStrategyProvider(ABC):
     @abstractmethod
-    def generate(self, deal: Deal, disclosure: str) -> tuple[ContentStrategy, dict[str, int]]:
+    def generate(
+        self,
+        deal: Deal,
+        disclosure: str,
+        brief: ContentBriefPlan | None = None,
+    ) -> tuple[ContentStrategy, dict[str, int]]:
         raise NotImplementedError
 
 
 class DeterministicContentProvider(ContentStrategyProvider):
-    def generate(self, deal: Deal, disclosure: str) -> tuple[ContentStrategy, dict[str, int]]:
+    def generate(
+        self,
+        deal: Deal,
+        disclosure: str,
+        brief: ContentBriefPlan | None = None,
+    ) -> tuple[ContentStrategy, dict[str, int]]:
         product = deal.product
         stats = deal.price_statistics
         price = f"${Decimal(product.current_price):.2f}"
@@ -41,11 +52,15 @@ class DeterministicContentProvider(ContentStrategyProvider):
         strategy = ContentStrategy(
             hook=f"A small-desk upgrade at the current listed price of {price}",
             angle="practical value for compact workspaces",
-            title=f"{product.product_name} deal",
+            title=brief.selected_title if brief else f"{product.product_name} deal",
             body_copy=(
-                f"Based on the listed specifications, {product.product_name} is designed for "
-                f"compact workspaces. Current listed price: {price}; listed discount: {discount}%. "
-                f"{stats.get('claim_label', 'Price observed by our system')}."
+                generate_seo_description(product, deal, brief)
+                if brief
+                else (
+                    f"Based on the listed specifications, {product.product_name} is designed for "
+                    f"compact workspaces. Current listed price: {price}; listed discount: {discount}%. "
+                    f"{stats.get('claim_label', 'Price observed by our system')}."
+                )
             ),
             cta="Check the current price and availability",
             hashtags=["#DeskSetup", "#HomeOffice", "#SmallSpace", "#DealFinds"],
@@ -60,7 +75,9 @@ class DeterministicContentProvider(ContentStrategyProvider):
                 {"seconds": "8-18", "text": f"Current listed price {price}"},
                 {"seconds": "18-25", "text": "Check current price • Affiliate link"},
             ],
-            target_audience="people improving compact home-office and desk setups",
+            target_audience=(
+                brief.target_audience if brief else "people improving compact home-office and desk setups"
+            ),
             content_category=product.category,
             affiliate_disclosure=disclosure,
             confidence_score=Decimal("86"),
@@ -77,7 +94,12 @@ class OpenAIContentProvider(ContentStrategyProvider):
         self.settings = settings
         self.client = OpenAI(api_key=settings.openai_api_key.get_secret_value())  # type: ignore[union-attr]
 
-    def generate(self, deal: Deal, disclosure: str) -> tuple[ContentStrategy, dict[str, int]]:
+    def generate(
+        self,
+        deal: Deal,
+        disclosure: str,
+        brief: ContentBriefPlan | None = None,
+    ) -> tuple[ContentStrategy, dict[str, int]]:
         product = deal.product
         factual_context = {
             "name": product.product_name,
@@ -90,6 +112,7 @@ class OpenAIContentProvider(ContentStrategyProvider):
             "observed_price_statistics": deal.price_statistics,
             "availability": product.availability,
             "disclosure": disclosure,
+            "commercial_content_brief": brief.model_dump(mode="json") if brief else None,
         }
         response = self.client.responses.parse(
             model=self.settings.openai_model,
@@ -164,8 +187,10 @@ def load_templates(
 def generate_idea_and_variant(
     db: Session, deal: Deal, settings: Settings, template_key: str = "deal_alert"
 ) -> ContentVariant:
+    brief = build_content_brief(db, deal, settings, template_key)
     provider = choose_provider(db, settings)
-    strategy, usage = provider.generate(deal, deal.product.merchant.disclosure_text)
+    strategy, usage = provider.generate(deal, deal.product.merchant.disclosure_text, brief)
+    strategy.title = brief.selected_title
     violations = strategy_has_unsupported_claim(strategy)
     if violations:
         raise ValueError(f"Unsupported claims generated: {', '.join(violations)}")
@@ -193,6 +218,8 @@ def generate_idea_and_variant(
         status="draft",
     )
     db.add(variant)
+    db.flush()
+    persist_content_brief(db, idea, variant, brief)
     input_cost = Decimal(usage["input_tokens"]) / 1_000_000 * settings.openai_input_cost_per_million
     output_cost = Decimal(usage["output_tokens"]) / 1_000_000 * settings.openai_output_cost_per_million
     db.add(

@@ -23,37 +23,55 @@ from apps.api.db.models import (
     AffiliateLink,
     AppSetting,
     Click,
+    ContentBrief,
     ContentIdea,
     ContentVariant,
     Cost,
     Deal,
     Experiment,
+    ExperimentKeyword,
     JobRun,
+    Keyword,
+    PinterestBoard,
     Product,
+    ProductWatchlist,
     Publication,
     StrategySnapshot,
 )
 from apps.api.db.session import get_db
 from apps.api.schemas import (
+    AffiliateProgramInput,
     ContentOut,
     DealOut,
     OnboardingInput,
     ProductOut,
     QueueUpdate,
     UnitEconomicsInput,
+    WatchlistInput,
 )
 from apps.api.services.affiliate import ensure_affiliate_link
+from apps.api.services.affiliate_discovery import (
+    affiliate_program_rows,
+    discovery_source_catalog,
+    persist_affiliate_programs,
+    rescore_affiliate_programs,
+)
 from apps.api.services.analytics import (
     import_conversion_csv,
+    keyword_performance_report,
     overview,
     rankings,
+    seo_commercial_analytics,
     weekly_business_report,
+    weekly_search_strategy_report,
 )
 from apps.api.services.demo import bootstrap_demo
 from apps.api.services.economics import calculate_unit_economics
+from apps.api.services.opportunities import evaluate_watchlists, opportunity_feed, refresh_opportunities
 from apps.api.services.optimization import create_daily_strategy, detect_winners
 from apps.api.services.publishing import PinterestPublisher, publish_variant
 from apps.api.services.scheduler import schedule_approved
+from apps.api.services.seo import keyword_experiment_result, keyword_summary, seo_taxonomy_summary
 
 router = APIRouter()
 admin = Annotated[None, Depends(require_admin)]
@@ -253,6 +271,187 @@ def strategy(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
 @router.get("/reports/weekly")
 def weekly_report(db: Session = Depends(get_db)) -> dict[str, Any]:
     return weekly_business_report(db)
+
+
+@router.get("/reports/search-strategy")
+def search_strategy_report(db: Session = Depends(get_db)) -> dict[str, Any]:
+    return weekly_search_strategy_report(db)
+
+
+@router.get("/seo/keywords")
+def seo_keywords(limit: int = Query(100, ge=1, le=500), db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+    return keyword_summary(db, limit=limit)
+
+
+@router.get("/seo/taxonomy")
+def seo_taxonomy(db: Session = Depends(get_db)) -> dict[str, Any]:
+    return seo_taxonomy_summary(db)
+
+
+@router.get("/seo/analytics")
+def seo_analytics(db: Session = Depends(get_db)) -> dict[str, Any]:
+    return seo_commercial_analytics(db)
+
+
+@router.get("/seo/content-briefs")
+def content_briefs(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+    briefs = db.scalars(select(ContentBrief).order_by(ContentBrief.created_at.desc()).limit(100)).all()
+    output: list[dict[str, Any]] = []
+    for brief in briefs:
+        primary = db.get(Keyword, brief.primary_keyword_id)
+        output.append(
+            {
+                "id": brief.id,
+                "idea_id": brief.idea_id,
+                "product_id": brief.product_id,
+                "product": brief.idea.deal.product.product_name,
+                "primary_keyword": primary.keyword if primary else None,
+                "search_intent": brief.search_intent,
+                "content_type": brief.content_type,
+                "target_audience": brief.target_audience,
+                "problem_solved": brief.problem_solved,
+                "verified_product_facts": brief.verified_product_facts,
+                "price_context": brief.price_context,
+                "affiliate_economics": brief.affiliate_economics,
+                "recommended_angle": brief.recommended_angle,
+                "recommended_board": brief.board.name,
+                "cta": brief.cta,
+                "disclosure": brief.disclosure,
+                "title_candidates": brief.title_candidates,
+                "selected_title": brief.selected_title,
+                "confidence": float(brief.confidence),
+            }
+        )
+    return output
+
+
+@router.get("/seo/experiments")
+def seo_experiments(
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> list[dict[str, Any]]:
+    performance = {row["keyword_id"]: row for row in keyword_performance_report(db)}
+    output: list[dict[str, Any]] = []
+    for experiment in db.scalars(select(Experiment).order_by(Experiment.created_at.desc())).all():
+        associations = db.execute(
+            select(ExperimentKeyword, Keyword)
+            .join(Keyword, Keyword.id == ExperimentKeyword.keyword_id)
+            .where(ExperimentKeyword.experiment_id == experiment.id)
+        ).all()
+        if not associations:
+            continue
+        arms = [
+            {
+                "label": association.variant_label,
+                "keyword": keyword.keyword,
+                "impressions": performance.get(keyword.id, {}).get("impressions", 0),
+                "clicks": performance.get(keyword.id, {}).get("clicks", 0),
+                "conversions": performance.get(keyword.id, {}).get("conversions", 0),
+                "revenue": performance.get(keyword.id, {}).get("revenue", 0),
+                "profit": performance.get(keyword.id, {}).get("profit", 0),
+            }
+            for association, keyword in associations
+        ]
+        evaluation = keyword_experiment_result(
+            arms,
+            minimum_impressions=settings.seo_min_experiment_impressions,
+            minimum_clicks=settings.seo_min_experiment_clicks,
+            minimum_conversions=settings.seo_min_experiment_conversions,
+        )
+        output.append(
+            {
+                "id": experiment.id,
+                "name": experiment.name,
+                "hypothesis": experiment.hypothesis,
+                "status": experiment.status,
+                "arms": arms,
+                "evaluation": evaluation,
+            }
+        )
+    return output
+
+
+@router.get("/opportunities")
+def opportunities(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+    return opportunity_feed(db)
+
+
+@router.post("/opportunities/refresh", dependencies=[Depends(require_admin)])
+def refresh_opportunity_feed(
+    db: Session = Depends(get_db), settings: Settings = Depends(get_settings)
+) -> dict[str, int | str]:
+    rows = refresh_opportunities(db, settings)
+    return {"scored": len(rows), "optimization_target": "attributable_profit"}
+
+
+@router.get("/affiliate-programs")
+def affiliate_programs(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+    return affiliate_program_rows(db)
+
+
+@router.get("/affiliate-programs/discovery-sources")
+def affiliate_discovery_sources() -> list[dict[str, Any]]:
+    return discovery_source_catalog()
+
+
+@router.post("/affiliate-programs/import", dependencies=[Depends(require_admin)])
+def import_affiliate_programs(payload: list[AffiliateProgramInput], db: Session = Depends(get_db)) -> dict[str, int]:
+    return {"imported": len(persist_affiliate_programs(db, payload))}
+
+
+@router.post("/affiliate-programs/rescore", dependencies=[Depends(require_admin)])
+def rescore_programs(db: Session = Depends(get_db)) -> dict[str, int]:
+    return {"scored": rescore_affiliate_programs(db)}
+
+
+@router.get("/watchlists")
+def watchlists(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+    rows = db.scalars(select(ProductWatchlist).order_by(ProductWatchlist.created_at.desc())).all()
+    return [
+        {
+            "id": row.id,
+            "name": row.name,
+            "product_id": row.product_id,
+            "merchant_id": row.merchant_id,
+            "category": row.category,
+            "rule_type": row.rule_type,
+            "threshold": float(row.threshold),
+            "status": row.status,
+            "last_value": float(row.last_value) if row.last_value is not None else None,
+            "last_evaluated_at": row.last_evaluated_at,
+            "triggered_at": row.triggered_at,
+        }
+        for row in rows
+    ]
+
+
+@router.post("/watchlists", dependencies=[Depends(require_admin)])
+def create_watchlist(payload: WatchlistInput, db: Session = Depends(get_db)) -> dict[str, str]:
+    if payload.product_id and db.get(Product, payload.product_id) is None:
+        raise HTTPException(404, "Product not found")
+    row = ProductWatchlist(**payload.model_dump())
+    db.add(row)
+    db.commit()
+    return {"id": row.id, "status": row.status}
+
+
+@router.post("/watchlists/evaluate", dependencies=[Depends(require_admin)])
+def run_watchlist_evaluation(db: Session = Depends(get_db)) -> dict[str, int]:
+    return evaluate_watchlists(db)
+
+
+@router.patch("/seo/boards/{board_id}", dependencies=[Depends(require_admin)])
+def link_pinterest_board(
+    board_id: str,
+    external_id: str = Query(min_length=1, max_length=160),
+    db: Session = Depends(get_db),
+) -> dict[str, str]:
+    board = db.get(PinterestBoard, board_id)
+    if board is None:
+        raise HTTPException(404, "Board taxonomy record not found")
+    board.external_id = external_id
+    db.commit()
+    return {"id": board.id, "external_id": external_id}
 
 
 @router.post("/strategy/run", dependencies=[Depends(require_admin)])

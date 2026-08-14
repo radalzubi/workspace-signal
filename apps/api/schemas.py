@@ -120,3 +120,88 @@ class OnboardingInput(BaseModel):
     tts_provider: str = "disabled"
     monthly_software_budget: Decimal = Field(gt=0)
     monthly_ad_budget: Decimal = Field(default=Decimal("0"), ge=0)
+
+
+class ContentBriefPlan(BaseModel):
+    product_id: str
+    deal_id: str
+    primary_keyword_id: str
+    keyword_cluster_id: str
+    board_id: str
+    search_intent: str
+    content_type: Literal["evergreen", "deal"]
+    target_audience: str
+    problem_solved: str
+    verified_product_facts: dict[str, Any]
+    price_context: dict[str, Any]
+    affiliate_economics: dict[str, Any]
+    recommended_angle: str
+    cta: str
+    disclosure: str
+    title_candidates: list[dict[str, Any]]
+    selected_title: str = Field(max_length=100)
+    primary_keyword: str
+    secondary_keywords: list[str] = Field(default_factory=list)
+    secondary_keyword_ids: list[str] = Field(default_factory=list)
+    source: str = "deterministic"
+    confidence: Decimal = Field(ge=0, le=100)
+
+
+class AffiliateProgramInput(BaseModel):
+    merchant: str = Field(min_length=2, max_length=180)
+    program_name: str = Field(min_length=2, max_length=220)
+    network: str = Field(min_length=2, max_length=120)
+    program_url: HttpUrl
+    status: Literal[
+        "discovered", "research_needed", "eligible", "applied", "approved", "rejected", "paused", "disabled"
+    ] = "discovered"
+    country: str = Field(min_length=2, max_length=2)
+    categories: list[str] = Field(default_factory=list)
+    commission_type: str = "percent_sale"
+    commission_rate: Decimal = Field(default=Decimal("0"), ge=0, le=1)
+    cookie_window: int | None = Field(default=None, ge=0)
+    average_order_value: Decimal | None = Field(default=None, ge=0)
+    estimated_conversion_rate: Decimal | None = Field(default=None, ge=0, le=1)
+    product_feed_available: bool = False
+    api_available: bool = False
+    deep_linking_available: bool = False
+    media_rights: str = "unknown"
+    social_media_allowed: bool | None = None
+    pinterest_allowed: bool | None = None
+    paid_search_rules: str = "unknown"
+    direct_linking_rules: str = "unknown"
+    conversion_reporting: str = "unknown"
+    reporting_quality_score: Decimal = Field(default=Decimal("50"), ge=0, le=100)
+    payout_threshold: Decimal | None = Field(default=None, ge=0)
+    payment_frequency: str | None = None
+    application_required: bool = True
+    approval_status: str = "not_applied"
+    merchant_reputation_score: Decimal = Field(default=Decimal("50"), ge=0, le=100)
+    return_risk_score: Decimal = Field(default=Decimal("35"), ge=0, le=100)
+    terms_last_checked: datetime | None = None
+    source: str
+    source_kind: str = "official"
+    confidence: Decimal = Field(default=Decimal("0"), ge=0, le=100)
+    notes: str = ""
+
+    @field_validator("country")
+    @classmethod
+    def uppercase_country(cls, value: str) -> str:
+        return value.upper()
+
+
+class WatchlistInput(BaseModel):
+    name: str = Field(min_length=2, max_length=180)
+    product_id: str | None = None
+    merchant_id: str | None = None
+    category: str | None = Field(default=None, max_length=160)
+    rule_type: Literal["price_below_30d_percent", "opportunity_score_above", "commission_rate_above"]
+    threshold: Decimal = Field(ge=0)
+
+    @field_validator("rule_type")
+    @classmethod
+    def target_required(cls, value: str, info: Any) -> str:
+        data = info.data
+        if not any(data.get(field) for field in ("product_id", "merchant_id", "category")):
+            raise ValueError("A product, merchant, or category target is required")
+        return value

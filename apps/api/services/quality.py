@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from apps.api.core.config import Settings
 from apps.api.db.models import AffiliateLink, ContentVariant
 from apps.api.services.content import PROHIBITED_CLAIMS
+from apps.api.services.seo import detect_keyword_stuffing
 
 
 def validate_content(db: Session, variant: ContentVariant, settings: Settings) -> dict[str, object]:
@@ -25,6 +26,14 @@ def validate_content(db: Session, variant: ContentVariant, settings: Settings) -
             errors.append("rendering_error")
     if any(claim in combined for claim in PROHIBITED_CLAIMS):
         errors.append("unsupported_claim")
+    stuffing = detect_keyword_stuffing(
+        variant.idea.title,
+        max_repetitions=settings.seo_keyword_max_repetitions,
+    )
+    if stuffing:
+        errors.append("keyword_stuffing")
+    if len(variant.idea.title) > 100:
+        errors.append("title_too_long")
     if "affiliate" not in combined or "commission" not in combined:
         errors.append("missing_disclosure")
     link = db.scalar(select(AffiliateLink).where(AffiliateLink.content_id == variant.id))
@@ -53,6 +62,7 @@ def validate_content(db: Session, variant: ContentVariant, settings: Settings) -
         "passed": not errors,
         "errors": errors,
         "warnings": warnings,
+        "seo": {"keyword_stuffing": stuffing},
         "checked_at": datetime.now(UTC).isoformat(),
     }
     variant.quality_report = report

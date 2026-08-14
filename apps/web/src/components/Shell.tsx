@@ -2,9 +2,11 @@ import Link from "next/link";
 
 const navigation = [
   ["overview", "Overview"], ["products", "Products"], ["deals", "Deals"],
+  ["opportunities", "Opportunities"], ["seo", "SEO Intelligence"], ["affiliate-programs", "Affiliate Programs"],
   ["content", "Content"], ["content-queue", "Content Queue"], ["published", "Published"],
   ["analytics", "Analytics"], ["revenue", "Revenue"], ["experiments", "Experiments"],
   ["campaigns", "Campaigns"], ["costs", "Costs"], ["settings", "Settings"],
+  ["strategy-report", "Strategy Report"], ["watchlists", "Watchlists"],
   ["system-health", "System Health"]
 ] as const;
 
@@ -28,6 +30,6 @@ export function Shell({ section, children, demo = true }: { section: string; chi
 }
 
 function navIcon(key: string) {
-  const icons: Record<string, string> = { overview: "◫", products: "◇", deals: "↘", content: "✦", "content-queue": "≡", published: "✓", analytics: "⌁", revenue: "$", experiments: "⌬", campaigns: "◎", costs: "−", settings: "⚙", "system-health": "◉" };
+  const icons: Record<string, string> = { overview: "◫", products: "◇", deals: "↘", opportunities: "◆", seo: "⌕", "affiliate-programs": "%", content: "✦", "content-queue": "≡", published: "✓", analytics: "⌁", revenue: "$", experiments: "⌬", campaigns: "◎", costs: "−", "strategy-report": "↗", watchlists: "◉", settings: "⚙", "system-health": "◉" };
   return icons[key] ?? "·";
 }

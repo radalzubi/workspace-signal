@@ -88,7 +88,12 @@ class PinterestPublisher(SocialPublisher):
         return cast(list[dict[str, Any]], payload.get("items", []))
 
     def publish(self, variant: ContentVariant, link: AffiliateLink) -> dict[str, Any]:
-        if not self.settings.pinterest_board_id:
+        selected_board_id = (
+            variant.idea.brief.board.external_id
+            if variant.idea.brief and variant.idea.brief.board.external_id
+            else self.settings.pinterest_board_id
+        )
+        if not selected_board_id:
             raise ValueError("PINTEREST_BOARD_ID is required")
         if not variant.media_uri:
             raise ValueError("Rendered media is required")
@@ -99,7 +104,7 @@ class PinterestPublisher(SocialPublisher):
         if not mime.startswith("image/"):
             raise ValueError("Live MVP publisher supports image Pins; video stays export-ready")
         payload = {
-            "board_id": self.settings.pinterest_board_id,
+            "board_id": selected_board_id,
             "title": variant.idea.title[:100],
             "description": variant.caption[:800],
             "link": outbound_url(link, self.settings),

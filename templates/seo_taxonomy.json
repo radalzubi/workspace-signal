@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "niche": "small-space desk setup deals",
+  "country": "US",
+  "source": "curated_demo_configuration",
+  "source_note": "Seed terms are hypotheses, not Pinterest search-volume claims. Replace or enrich with authorized Pinterest Trends observations.",
+  "rules": {
+    "title_max_characters": 100,
+    "description_max_characters": 800,
+    "preferred_title_characters": 70,
+    "max_keyword_repetitions": 2,
+    "profit_confidence_threshold": 65,
+    "minimum_experiment_impressions": 500,
+    "minimum_experiment_clicks": 20,
+    "minimum_experiment_conversions": 3
+  },
+  "opportunity_weights": {
+    "deal_quality": 0.15,
+    "search_demand": 0.13,
+    "commercial_intent": 0.16,
+    "affiliate_economics": 0.20,
+    "content_potential": 0.12,
+    "historical_performance": 0.12,
+    "problem_solution": 0.12
+  },
+  "categories": {
+    "Monitor Arms": ["monitor arm", "compact monitor arm", "space saving monitor arm"],
+    "Laptop Stands": ["laptop stand", "compact laptop stand", "laptop desk setup"],
+    "Cable Management": ["cable management", "desk cable organizer", "standing desk cable management"],
+    "Organization": ["desk organization", "under desk storage", "small desk storage"],
+    "Accessories": ["desk accessories", "compact mouse", "ergonomic desk accessories"],
+    "Lighting": ["desk lamp", "small desk lighting", "home office lighting"]
+  },
+  "problems": {
+    "Monitor Arms": {"problem": "small desk lacks usable surface space", "solution": "raise the monitor off the desktop"},
+    "Laptop Stands": {"problem": "laptop occupies valuable desk space", "solution": "raise and organize the laptop footprint"},
+    "Cable Management": {"problem": "cables create clutter on and below the desk", "solution": "route and contain power and charging cables"},
+    "Organization": {"problem": "small desk has insufficient storage", "solution": "add storage without consuming desktop area"},
+    "Accessories": {"problem": "full-size accessories crowd a compact workspace", "solution": "use accessories designed for a smaller footprint"},
+    "Lighting": {"problem": "a small workspace needs focused lighting", "solution": "add a compact adjustable light source"}
+  },
+  "boards": [
+    {"name": "Small Desk Setup Ideas", "category": "General", "description": "Practical small desk setup ideas, compact workspace products and space-saving home office inspiration.", "keywords": ["small desk setup", "compact desk setup", "small home office"]},
+    {"name": "Desk Organization Ideas", "category": "Organization", "description": "Desk organization ideas, under-desk storage and practical ways to keep a compact workspace clear.", "keywords": ["desk organization", "small desk storage", "under desk storage"]},
+    {"name": "Home Office Upgrades", "category": "General", "description": "Useful home office upgrades for comfort, focus and a more functional workspace.", "keywords": ["home office upgrades", "desk setup ideas", "workspace accessories"]},
+    {"name": "Small Desk Accessories", "category": "Accessories", "description": "Compact and space-saving desk accessories selected for small workspaces and apartment offices.", "keywords": ["small desk accessories", "space saving desk accessories", "compact desk accessories"]},
+    {"name": "Small Apartment Office Ideas", "category": "General", "description": "Small apartment office ideas for fitting a productive workspace into limited rooms and shared spaces.", "keywords": ["small apartment office", "tiny office ideas", "small home office"]},
+    {"name": "Workspace Deals", "category": "Deals", "description": "Current workspace deals with observed price context, practical use cases and clearly disclosed affiliate links.", "keywords": ["workspace deals", "desk accessory deals", "home office deals"]},
+    {"name": "Cable Management Ideas", "category": "Cable Management", "description": "Cable management ideas and products for cleaner standing desks, compact desks and home offices.", "keywords": ["cable management", "desk cable organizer", "standing desk cable management"]},
+    {"name": "Budget Desk Setup", "category": "Budget", "description": "Budget desk setup ideas, useful upgrades under $50 and affordable home office improvements.", "keywords": ["budget desk setup", "desk accessories under $50", "home office upgrades under $100"]},
+    {"name": "Ergonomic Desk Setup", "category": "Ergonomics", "description": "Ergonomic desk setup products and practical workspace adjustments based on listed product specifications.", "keywords": ["ergonomic desk setup", "monitor arm for small desk", "ergonomic desk accessories"]}
+  ],
+  "seed_keywords": [
+    "small desk setup",
+    "small desk ideas",
+    "compact desk setup",
+    "small home office",
+    "small apartment desk setup",
+    "desk organization",
+    "how to organize small desk",
+    "small desk accessories",
+    "space saving desk accessories",
+    "desk accessories under $50",
+    "home office upgrades under $100",
+    "monitor arm for small desk",
+    "best monitor arm for small desk",
+    "space saving monitor arm for small desk",
+    "monitor arm deal",
+    "cable management for standing desk",
+    "desk cable organizer",
+    "compact laptop stand for work",
+    "under desk storage for small desk",
+    "compact ergonomic mouse",
+    "small desk lamp with usb c",
+    "budget desk setup",
+    "workspace deals"
+  ]
+}

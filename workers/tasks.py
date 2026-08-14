@@ -11,8 +11,11 @@ from apps.api.core.config import get_settings
 from apps.api.db.models import ContentVariant, Deal, JobRun
 from apps.api.db.session import SessionLocal
 from apps.api.services.affiliate import ensure_affiliate_link
+from apps.api.services.analytics import keyword_performance_report, refresh_board_performance
 from apps.api.services.deals import detect_deals
 from apps.api.services.demo import bootstrap_demo
+from apps.api.services.opportunities import evaluate_watchlists as evaluate_watchlist_rules
+from apps.api.services.opportunities import refresh_opportunities
 from apps.api.services.optimization import create_daily_strategy, detect_winners
 from apps.api.services.publishing import publish_variant
 from workers.celery_app import celery_app
@@ -109,6 +112,38 @@ def daily_optimization() -> dict[str, object]:
             "winner_changes": changes,
             "strategy_id": snapshot.id,
         }
+        _finish(db, run, result)
+        return result
+    except Exception as exc:
+        _finish(db, run, {}, exc)
+        raise
+
+
+@celery_app.task(name="workers.tasks.seo_commercial_learning")  # type: ignore[untyped-decorator]
+def seo_commercial_learning() -> dict[str, object]:
+    db, run = _start("seo_commercial_learning")
+    try:
+        keywords = keyword_performance_report(db, persist=True)
+        boards = refresh_board_performance(db)
+        opportunities = refresh_opportunities(db, settings)
+        result: dict[str, object] = {
+            "keywords_analyzed": len(keywords),
+            "boards_updated": boards,
+            "opportunities_scored": len(opportunities),
+            "optimization_target": "attributable_profit",
+        }
+        _finish(db, run, result)
+        return result
+    except Exception as exc:
+        _finish(db, run, {}, exc)
+        raise
+
+
+@celery_app.task(name="workers.tasks.evaluate_watchlists")  # type: ignore[untyped-decorator]
+def evaluate_watchlists() -> dict[str, int]:
+    db, run = _start("evaluate_watchlists")
+    try:
+        result = evaluate_watchlist_rules(db)
         _finish(db, run, result)
         return result
     except Exception as exc:

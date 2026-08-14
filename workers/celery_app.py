@@ -20,6 +20,14 @@ celery_app.conf.update(
             "schedule": 3600.0,
         },
         "daily-optimization": {"task": "workers.tasks.daily_optimization", "schedule": 86400.0},
+        "seo-commercial-learning-daily": {
+            "task": "workers.tasks.seo_commercial_learning",
+            "schedule": 86400.0,
+        },
+        "watchlist-evaluation-hourly": {
+            "task": "workers.tasks.evaluate_watchlists",
+            "schedule": 3600.0,
+        },
     },
 )
 celery_app.autodiscover_tasks(["workers"])

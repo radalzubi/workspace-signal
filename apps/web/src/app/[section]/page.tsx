@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation";
 import { Economics } from "@/components/Economics";
+import { AffiliatePrograms } from "@/components/AffiliatePrograms";
 import { Onboarding } from "@/components/Onboarding";
+import { OpportunityFeed, type Opportunity } from "@/components/OpportunityFeed";
 import { Overview, type OverviewData } from "@/components/Overview";
 import { Queue, type QueueItem } from "@/components/Queue";
+import { SEOIntelligence } from "@/components/SEOIntelligence";
 import { sectionKeys, Shell } from "@/components/Shell";
+import { StrategyReport } from "@/components/StrategyReport";
 import { apiGet, money } from "@/lib/api";
 
 type Params = Promise<{ section: string }>;
@@ -28,6 +32,23 @@ export default async function SectionPage({ params }: { params: Params }) {
     body = <><Overview data={data} deals={[]} health={{}} /><Economics /></>;
   } else if (section === "settings") {
     body = <><Onboarding /><Economics /></>;
+  } else if (section === "opportunities") {
+    body = <OpportunityFeed opportunities={await apiGet<Opportunity[]>("/opportunities")} />;
+  } else if (section === "seo") {
+    const [analytics, taxonomy, experiments] = await Promise.all([
+      apiGet<Parameters<typeof SEOIntelligence>[0]["analytics"]>("/seo/analytics"),
+      apiGet<Parameters<typeof SEOIntelligence>[0]["taxonomy"]>("/seo/taxonomy"),
+      apiGet<Parameters<typeof SEOIntelligence>[0]["experiments"]>("/seo/experiments"),
+    ]);
+    body = <SEOIntelligence analytics={analytics} taxonomy={taxonomy} experiments={experiments} />;
+  } else if (section === "affiliate-programs") {
+    const [programs, sources] = await Promise.all([
+      apiGet<Parameters<typeof AffiliatePrograms>[0]["programs"]>("/affiliate-programs"),
+      apiGet<Parameters<typeof AffiliatePrograms>[0]["sources"]>("/affiliate-programs/discovery-sources"),
+    ]);
+    body = <AffiliatePrograms programs={programs} sources={sources} />;
+  } else if (section === "strategy-report") {
+    body = <StrategyReport report={await apiGet<Parameters<typeof StrategyReport>[0]["report"]>("/reports/search-strategy")} />;
   } else {
     body = <GenericSection section={section} />;
   }
@@ -61,6 +82,7 @@ async function GenericSection({ section }: { section: string }) {
     products: "/products", deals: "/deals", published: "/publications",
     experiments: "/experiments", costs: "/costs", "system-health": "/system-health",
     campaigns: "/experiments",
+    watchlists: "/watchlists",
   };
   const data = await apiGet<unknown>(routes[section] ?? "/overview");
   const rows = Array.isArray(data) ? data.filter(isRecord) : isRecord(data) ? [data] : [];

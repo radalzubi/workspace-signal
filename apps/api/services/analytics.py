@@ -12,11 +12,18 @@ from sqlalchemy.orm import Session
 from apps.api.db.models import (
     AIUsage,
     Click,
+    ContentBrief,
     ContentIdea,
+    ContentKeyword,
     ContentVariant,
     Conversion,
     Cost,
+    Deal,
+    Keyword,
+    KeywordPerformance,
     PerformanceEvent,
+    PinterestBoard,
+    Product,
     Publication,
 )
 
@@ -165,3 +172,260 @@ def import_conversion_csv(db: Session, raw: bytes, provider: str = "csv") -> dic
         imported += 1
     db.commit()
     return {"imported": imported, "skipped": skipped}
+
+
+def _content_metrics(db: Session, content_ids: list[str]) -> dict[str, Decimal | int]:
+    if not content_ids:
+        return {
+            "posts": 0,
+            "impressions": 0,
+            "clicks": 0,
+            "conversions": 0,
+            "revenue": Decimal("0"),
+            "cost": Decimal("0"),
+        }
+    publication_ids = list(db.scalars(select(Publication.id).where(Publication.content_id.in_(content_ids))).all())
+    impressions = int(
+        db.scalar(
+            select(func.coalesce(func.sum(PerformanceEvent.count), 0)).where(
+                PerformanceEvent.publication_id.in_(publication_ids),
+                PerformanceEvent.event_type == "impression",
+            )
+        )
+        or 0
+    )
+    clicks = int(db.scalar(select(func.count(Click.id)).where(Click.content_id.in_(content_ids))) or 0)
+    conversions = int(db.scalar(select(func.count(Conversion.id)).where(Conversion.content_id.in_(content_ids))) or 0)
+    revenue = Decimal(
+        db.scalar(
+            select(func.coalesce(func.sum(Conversion.commission), 0)).where(Conversion.content_id.in_(content_ids))
+        )
+        or 0
+    )
+    cost = Decimal(
+        db.scalar(select(func.coalesce(func.sum(Cost.amount), 0)).where(Cost.content_id.in_(content_ids))) or 0
+    )
+    return {
+        "posts": len(set(content_ids)),
+        "impressions": impressions,
+        "clicks": clicks,
+        "conversions": conversions,
+        "revenue": revenue,
+        "cost": cost,
+    }
+
+
+def _performance_payload(label: str, metrics: dict[str, Decimal | int]) -> dict[str, Any]:
+    impressions = int(metrics["impressions"])
+    clicks = int(metrics["clicks"])
+    conversions = int(metrics["conversions"])
+    revenue = Decimal(metrics["revenue"])
+    cost = Decimal(metrics["cost"])
+    profit = revenue - cost
+    return {
+        "label": label,
+        "posts": int(metrics["posts"]),
+        "impressions": impressions,
+        "clicks": clicks,
+        "ctr": float(Decimal(clicks) / impressions) if impressions else 0,
+        "conversions": conversions,
+        "conversion_rate": float(Decimal(conversions) / clicks) if clicks else 0,
+        "revenue": float(revenue),
+        "cost": float(cost),
+        "profit": float(profit),
+        "epc": float(revenue / clicks) if clicks else 0,
+        "revenue_per_1000_impressions": float(revenue / impressions * 1000) if impressions else 0,
+        "profit_per_1000_impressions": float(profit / impressions * 1000) if impressions else 0,
+        "profit_per_pin": float(profit / int(metrics["posts"])) if int(metrics["posts"]) else 0,
+    }
+
+
+def keyword_performance_report(db: Session, *, persist: bool = False) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    now = datetime.now(UTC)
+    for keyword in db.scalars(select(Keyword).order_by(Keyword.keyword)).all():
+        content_ids = list(
+            db.scalars(select(ContentKeyword.content_id).where(ContentKeyword.keyword_id == keyword.id)).all()
+        )
+        metrics = _content_metrics(db, content_ids)
+        payload = _performance_payload(keyword.keyword, metrics)
+        sample = min(
+            Decimal("100"), Decimal(payload["impressions"]) / Decimal("20") + Decimal(payload["conversions"]) * 10
+        )
+        profit_signal = max(
+            Decimal("0"), min(Decimal("100"), Decimal(str(payload["profit_per_1000_impressions"])) * 5 + 40)
+        )
+        keyword.performance_score = (
+            profit_signal * Decimal("0.55")
+            + Decimal(str(payload["ctr"])) * Decimal("100") * Decimal("0.15")
+            + Decimal(str(payload["conversion_rate"])) * Decimal("100") * Decimal("0.20")
+            + sample * Decimal("0.10")
+        ).quantize(Decimal("0.01"))
+        payload.update(
+            {
+                "keyword_id": keyword.id,
+                "intent": keyword.intent,
+                "performance_score": float(keyword.performance_score),
+                "confidence": float(sample),
+            }
+        )
+        rows.append(payload)
+        if persist and content_ids:
+            db.add(
+                KeywordPerformance(
+                    keyword_id=keyword.id,
+                    content_id=None,
+                    impressions=int(metrics["impressions"]),
+                    clicks=int(metrics["clicks"]),
+                    conversions=int(metrics["conversions"]),
+                    revenue=Decimal(metrics["revenue"]),
+                    cost=Decimal(metrics["cost"]),
+                    profit=Decimal(metrics["revenue"]) - Decimal(metrics["cost"]),
+                    period_start=now - timedelta(days=30),
+                    period_end=now,
+                    confidence=sample,
+                )
+            )
+    db.commit()
+    return sorted(rows, key=lambda item: (item["profit"], item["conversions"], item["clicks"]), reverse=True)
+
+
+def _band_report(db: Session, *, dimension: str) -> list[dict[str, Any]]:
+    buckets: dict[str, list[str]] = {}
+    rows = db.execute(
+        select(ContentVariant.id, Product.current_price, Product.discount_percent)
+        .join(ContentIdea, ContentIdea.id == ContentVariant.idea_id)
+        .join(Deal, Deal.id == ContentIdea.deal_id)
+        .join(Product, Product.id == Deal.product_id)
+    ).all()
+    for content_id, price, discount in rows:
+        value = Decimal(price if dimension == "price" else discount)
+        if dimension == "price":
+            label = (
+                "$0–25"
+                if value < 25
+                else "$25–50"
+                if value < 50
+                else "$50–100"
+                if value < 100
+                else "$100–250"
+                if value < 250
+                else "$250+"
+            )
+        else:
+            label = (
+                "0–10%"
+                if value < 10
+                else "10–20%"
+                if value < 20
+                else "20–30%"
+                if value < 30
+                else "30–40%"
+                if value < 40
+                else "40%+"
+            )
+        buckets.setdefault(label, []).append(content_id)
+    return sorted(
+        [_performance_payload(label, _content_metrics(db, ids)) for label, ids in buckets.items()],
+        key=lambda item: item["profit_per_1000_impressions"],
+        reverse=True,
+    )
+
+
+def seo_commercial_analytics(db: Session) -> dict[str, Any]:
+    content_type_rows = db.execute(
+        select(ContentVariant.id, ContentBrief.content_type)
+        .join(ContentIdea, ContentIdea.id == ContentVariant.idea_id)
+        .join(ContentBrief, ContentBrief.idea_id == ContentIdea.id)
+    ).all()
+    content_types: dict[str, list[str]] = {}
+    for content_id, content_type in content_type_rows:
+        content_types.setdefault(content_type, []).append(content_id)
+    return {
+        "keywords": keyword_performance_report(db),
+        "price_bands": _band_report(db, dimension="price"),
+        "discount_bands": _band_report(db, dimension="discount"),
+        "content_types": [
+            _performance_payload(label, _content_metrics(db, ids)) for label, ids in content_types.items()
+        ],
+    }
+
+
+def refresh_board_performance(db: Session) -> int:
+    updated = 0
+    for board in db.scalars(select(PinterestBoard)).all():
+        content_ids = list(
+            db.scalars(
+                select(ContentVariant.id)
+                .join(ContentIdea, ContentIdea.id == ContentVariant.idea_id)
+                .join(ContentBrief, ContentBrief.idea_id == ContentIdea.id)
+                .where(ContentBrief.board_id == board.id)
+            ).all()
+        )
+        metrics = _content_metrics(db, content_ids)
+        impressions = int(metrics["impressions"])
+        clicks = int(metrics["clicks"])
+        board.historical_profit_per_1000 = (
+            (Decimal(metrics["revenue"]) - Decimal(metrics["cost"])) / impressions * 1000
+            if impressions
+            else Decimal("0")
+        )
+        board.historical_conversion_rate = Decimal(int(metrics["conversions"])) / clicks if clicks else Decimal("0")
+        updated += 1
+    db.commit()
+    return updated
+
+
+def weekly_search_strategy_report(db: Session) -> dict[str, Any]:
+    analytics = seo_commercial_analytics(db)
+    keywords = [row for row in analytics["keywords"] if row["impressions"] > 0]
+    price_bands = [row for row in analytics["price_bands"] if row["impressions"] > 0]
+    discount_bands = [row for row in analytics["discount_bands"] if row["impressions"] > 0]
+    insights: list[str] = []
+    if keywords:
+        top_profit = max(keywords, key=lambda row: row["profit_per_1000_impressions"])
+        top_epc = max(keywords, key=lambda row: row["epc"])
+        insights.extend(
+            [
+                (
+                    f"'{top_profit['label']}' led observed profit per 1,000 impressions at "
+                    f"${top_profit['profit_per_1000_impressions']:.2f}."
+                ),
+                f"'{top_epc['label']}' led observed earnings per click at ${top_epc['epc']:.2f}.",
+            ]
+        )
+    if price_bands:
+        top_band = price_bands[0]
+        insights.append(
+            f"The {top_band['label']} price band led observed profit per 1,000 impressions at "
+            f"${top_band['profit_per_1000_impressions']:.2f}."
+        )
+    if discount_bands:
+        top_discount = discount_bands[0]
+        insights.append(
+            f"The {top_discount['label']} discount band led observed profit; discount depth "
+            "alone is not the ranking target."
+        )
+    if not insights:
+        insights.append(
+            "Insufficient keyword-attributed traffic; continue controlled publishing before changing weights."
+        )
+    sample_impressions = sum(row["impressions"] for row in keywords)
+    sample_conversions = sum(row["conversions"] for row in keywords)
+    return {
+        "period": "observed_lifetime_with_30_day_learning_snapshot",
+        "optimization_target": "attributable_profit",
+        "insights": insights,
+        "recommendations": [
+            "Increase allocation only for clusters with conversion evidence and positive profit per 1,000 impressions.",
+            "Keep changes within 15% while keyword conversion samples remain small.",
+            "Refresh Pinterest Trends inputs before treating configured trend scores as live demand.",
+        ],
+        "minimum_sample_guard": {
+            "observed_impressions": sample_impressions,
+            "observed_conversions": sample_conversions,
+            "decision_ready": sample_impressions >= 1000 and sample_conversions >= 5,
+        },
+        "evidence": analytics,
+        "generated_deterministically": True,
+    }

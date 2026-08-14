@@ -109,8 +109,8 @@ class MockProductProvider(ProductProvider):
                 rating=None,
                 review_count=None,
                 availability="in_stock",
-                merchant="Demo Merchant",
-                merchant_domain="example.com",
+                merchant=brand,
+                merchant_domain=f"{brand.lower().replace(' ', '-')}.example.com",
                 expected_commission_rate=Decimal(commission),
                 observed_at=now,
             )

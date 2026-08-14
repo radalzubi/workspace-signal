@@ -134,6 +134,7 @@ class ContentIdea(TimestampMixin, Base):
     confidence_score: Mapped[Decimal] = mapped_column(Numeric(5, 2))
     provider: Mapped[str] = mapped_column(String(64), default="mock")
     deal: Mapped[Deal] = relationship()
+    brief: Mapped[ContentBrief | None] = relationship(back_populates="idea", uselist=False)
 
 
 class ContentVariant(TimestampMixin, Base):
@@ -291,3 +292,266 @@ class AppSetting(TimestampMixin, Base):
     key: Mapped[str] = mapped_column(String(120), primary_key=True)
     value: Mapped[dict[str, Any]] = mapped_column(JSON)
     version: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class Keyword(TimestampMixin, Base):
+    __tablename__ = "keywords"
+    __table_args__ = (
+        UniqueConstraint("normalized_keyword", "niche", name="uq_keyword_normalized_niche"),
+        Index("ix_keywords_intent_performance", "intent", "performance_score"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    keyword: Mapped[str] = mapped_column(String(240))
+    normalized_keyword: Mapped[str] = mapped_column(String(240), index=True)
+    niche: Mapped[str] = mapped_column(String(160), index=True)
+    category: Mapped[str | None] = mapped_column(String(160), index=True)
+    intent: Mapped[str] = mapped_column(String(40), index=True)
+    commercial_intent_score: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    purchase_intent_score: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    deal_intent_score: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    search_relevance: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    seasonality: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    trend_score: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    competition_estimate: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=50)
+    performance_score: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    source: Mapped[str] = mapped_column(String(120), default="deterministic")
+    confidence: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=50)
+    last_updated: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
+class KeywordCluster(TimestampMixin, Base):
+    __tablename__ = "keyword_clusters"
+    __table_args__ = (UniqueConstraint("slug", "niche", name="uq_keyword_cluster_slug_niche"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    name: Mapped[str] = mapped_column(String(180), index=True)
+    slug: Mapped[str] = mapped_column(String(180))
+    niche: Mapped[str] = mapped_column(String(160), index=True)
+    cluster_type: Mapped[str] = mapped_column(String(40), default="topic")
+    primary_keyword_id: Mapped[str | None] = mapped_column(ForeignKey("keywords.id"), index=True)
+    intent: Mapped[str] = mapped_column(String(40), index=True)
+    description: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(32), default="active", index=True)
+
+
+class KeywordClusterMember(Base):
+    __tablename__ = "keyword_cluster_members"
+    __table_args__ = (UniqueConstraint("cluster_id", "keyword_id", name="uq_cluster_keyword"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    cluster_id: Mapped[str] = mapped_column(ForeignKey("keyword_clusters.id", ondelete="CASCADE"), index=True)
+    keyword_id: Mapped[str] = mapped_column(ForeignKey("keywords.id", ondelete="CASCADE"), index=True)
+    relevance: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=100)
+    is_primary: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class PinterestBoard(TimestampMixin, Base):
+    __tablename__ = "pinterest_boards"
+    __table_args__ = (UniqueConstraint("name", "niche", name="uq_board_name_niche"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    external_id: Mapped[str | None] = mapped_column(String(160), unique=True)
+    name: Mapped[str] = mapped_column(String(180), index=True)
+    description: Mapped[str] = mapped_column(Text)
+    niche: Mapped[str] = mapped_column(String(160), index=True)
+    category: Mapped[str | None] = mapped_column(String(160), index=True)
+    status: Mapped[str] = mapped_column(String(32), default="active", index=True)
+    historical_profit_per_1000: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0)
+    historical_conversion_rate: Mapped[Decimal] = mapped_column(Numeric(8, 5), default=0)
+
+
+class BoardKeyword(Base):
+    __tablename__ = "board_keywords"
+    __table_args__ = (UniqueConstraint("board_id", "keyword_id", name="uq_board_keyword"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    board_id: Mapped[str] = mapped_column(ForeignKey("pinterest_boards.id", ondelete="CASCADE"), index=True)
+    keyword_id: Mapped[str] = mapped_column(ForeignKey("keywords.id", ondelete="CASCADE"), index=True)
+    relevance: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=100)
+
+
+class ProductKeyword(Base):
+    __tablename__ = "product_keywords"
+    __table_args__ = (UniqueConstraint("product_id", "keyword_id", name="uq_product_keyword"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    product_id: Mapped[str] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"), index=True)
+    keyword_id: Mapped[str] = mapped_column(ForeignKey("keywords.id", ondelete="CASCADE"), index=True)
+    relevance: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    product_match: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    source: Mapped[str] = mapped_column(String(80), default="deterministic")
+
+
+class ContentKeyword(Base):
+    __tablename__ = "content_keywords"
+    __table_args__ = (UniqueConstraint("content_id", "keyword_id", name="uq_content_keyword"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    content_id: Mapped[str] = mapped_column(ForeignKey("content_variants.id", ondelete="CASCADE"), index=True)
+    keyword_id: Mapped[str] = mapped_column(ForeignKey("keywords.id", ondelete="CASCADE"), index=True)
+    role: Mapped[str] = mapped_column(String(24), default="secondary")
+    relevance: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+
+
+class ExperimentKeyword(Base):
+    __tablename__ = "experiment_keywords"
+    __table_args__ = (UniqueConstraint("experiment_id", "keyword_id", "variant_label", name="uq_experiment_keyword"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    experiment_id: Mapped[str] = mapped_column(ForeignKey("experiments.id", ondelete="CASCADE"), index=True)
+    keyword_id: Mapped[str] = mapped_column(ForeignKey("keywords.id", ondelete="CASCADE"), index=True)
+    variant_label: Mapped[str] = mapped_column(String(80))
+
+
+class ContentBrief(TimestampMixin, Base):
+    __tablename__ = "content_briefs"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    idea_id: Mapped[str] = mapped_column(ForeignKey("content_ideas.id", ondelete="CASCADE"), unique=True, index=True)
+    product_id: Mapped[str] = mapped_column(ForeignKey("products.id"), index=True)
+    deal_id: Mapped[str] = mapped_column(ForeignKey("deals.id"), index=True)
+    primary_keyword_id: Mapped[str] = mapped_column(ForeignKey("keywords.id"), index=True)
+    keyword_cluster_id: Mapped[str] = mapped_column(ForeignKey("keyword_clusters.id"), index=True)
+    board_id: Mapped[str] = mapped_column(ForeignKey("pinterest_boards.id"), index=True)
+    search_intent: Mapped[str] = mapped_column(String(40), index=True)
+    content_type: Mapped[str] = mapped_column(String(24), index=True)
+    target_audience: Mapped[str] = mapped_column(String(255))
+    problem_solved: Mapped[str] = mapped_column(String(300))
+    verified_product_facts: Mapped[dict[str, Any]] = mapped_column(JSON)
+    price_context: Mapped[dict[str, Any]] = mapped_column(JSON)
+    affiliate_economics: Mapped[dict[str, Any]] = mapped_column(JSON)
+    recommended_angle: Mapped[str] = mapped_column(String(240))
+    cta: Mapped[str] = mapped_column(String(240))
+    disclosure: Mapped[str] = mapped_column(String(300))
+    title_candidates: Mapped[list[dict[str, Any]]] = mapped_column(JSON)
+    selected_title: Mapped[str] = mapped_column(String(100))
+    source: Mapped[str] = mapped_column(String(80), default="deterministic")
+    confidence: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    idea: Mapped[ContentIdea] = relationship(back_populates="brief")
+    board: Mapped[PinterestBoard] = relationship()
+
+
+class AffiliateProgram(TimestampMixin, Base):
+    __tablename__ = "affiliate_programs"
+    __table_args__ = (
+        UniqueConstraint("network", "program_name", "country", name="uq_affiliate_program_network_name_country"),
+        Index("ix_affiliate_programs_status_approval", "status", "approval_status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    merchant_id: Mapped[str | None] = mapped_column(ForeignKey("merchants.id"), index=True)
+    merchant: Mapped[str] = mapped_column(String(180), index=True)
+    program_name: Mapped[str] = mapped_column(String(220))
+    network: Mapped[str] = mapped_column(String(120), index=True)
+    program_url: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(32), default="discovered", index=True)
+    country: Mapped[str] = mapped_column(String(2), index=True)
+    categories: Mapped[list[str]] = mapped_column(JSON, default=list)
+    commission_type: Mapped[str] = mapped_column(String(40), default="percent_sale")
+    commission_rate: Mapped[Decimal] = mapped_column(Numeric(8, 5), default=0)
+    cookie_window: Mapped[int | None] = mapped_column(Integer)
+    average_order_value: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
+    estimated_conversion_rate: Mapped[Decimal | None] = mapped_column(Numeric(8, 5))
+    product_feed_available: Mapped[bool] = mapped_column(Boolean, default=False)
+    api_available: Mapped[bool] = mapped_column(Boolean, default=False)
+    deep_linking_available: Mapped[bool] = mapped_column(Boolean, default=False)
+    media_rights: Mapped[str] = mapped_column(String(255), default="unknown")
+    social_media_allowed: Mapped[bool | None] = mapped_column(Boolean)
+    pinterest_allowed: Mapped[bool | None] = mapped_column(Boolean)
+    paid_search_rules: Mapped[str] = mapped_column(Text, default="unknown")
+    direct_linking_rules: Mapped[str] = mapped_column(Text, default="unknown")
+    conversion_reporting: Mapped[str] = mapped_column(String(160), default="unknown")
+    reporting_quality_score: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=50)
+    payout_threshold: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
+    payment_frequency: Mapped[str | None] = mapped_column(String(80))
+    application_required: Mapped[bool] = mapped_column(Boolean, default=True)
+    approval_status: Mapped[str] = mapped_column(String(32), default="not_applied", index=True)
+    merchant_reputation_score: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=50)
+    return_risk_score: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=35)
+    terms_last_checked: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    source: Mapped[str] = mapped_column(Text)
+    source_kind: Mapped[str] = mapped_column(String(40), default="official")
+    confidence: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    notes: Mapped[str] = mapped_column(Text, default="")
+
+
+class AffiliateProgramScore(Base):
+    __tablename__ = "affiliate_program_scores"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    program_id: Mapped[str] = mapped_column(ForeignKey("affiliate_programs.id", ondelete="CASCADE"), index=True)
+    score_version: Mapped[str] = mapped_column(String(40), default="affiliate-v1")
+    attractiveness_score: Mapped[Decimal] = mapped_column(Numeric(6, 2), index=True)
+    expected_revenue_per_100_clicks: Mapped[Decimal] = mapped_column(Numeric(12, 2))
+    components: Mapped[dict[str, Any]] = mapped_column(JSON)
+    confidence: Mapped[Decimal] = mapped_column(Numeric(5, 2))
+    calculated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
+class ProductProblem(TimestampMixin, Base):
+    __tablename__ = "product_problems"
+    __table_args__ = (UniqueConstraint("product_id", "normalized_problem", name="uq_product_problem"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    product_id: Mapped[str] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"), index=True)
+    problem: Mapped[str] = mapped_column(String(300))
+    normalized_problem: Mapped[str] = mapped_column(String(300))
+    solution: Mapped[str] = mapped_column(String(300))
+    relevance_score: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    source: Mapped[str] = mapped_column(String(80), default="deterministic")
+    confidence: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+
+
+class ProductOpportunity(TimestampMixin, Base):
+    __tablename__ = "product_opportunities"
+    __table_args__ = (Index("ix_opportunities_rank", "rank_basis", "expected_profit_per_1000", "opportunity_score"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    product_id: Mapped[str] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"), index=True)
+    affiliate_program_id: Mapped[str | None] = mapped_column(ForeignKey("affiliate_programs.id"), index=True)
+    keyword_cluster_id: Mapped[str | None] = mapped_column(ForeignKey("keyword_clusters.id"), index=True)
+    board_id: Mapped[str | None] = mapped_column(ForeignKey("pinterest_boards.id"), index=True)
+    score_version: Mapped[str] = mapped_column(String(40), default="opportunity-v1")
+    weights_version: Mapped[int] = mapped_column(Integer, default=1)
+    opportunity_score: Mapped[Decimal] = mapped_column(Numeric(6, 2), index=True)
+    rank_basis: Mapped[str] = mapped_column(String(32), default="opportunity_score", index=True)
+    components: Mapped[dict[str, Any]] = mapped_column(JSON)
+    expected_impressions: Mapped[int] = mapped_column(Integer, default=0)
+    expected_ctr: Mapped[Decimal] = mapped_column(Numeric(8, 5), default=0)
+    expected_conversion_rate: Mapped[Decimal] = mapped_column(Numeric(8, 5), default=0)
+    expected_order_value: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0)
+    commission_rate: Mapped[Decimal] = mapped_column(Numeric(8, 5), default=0)
+    expected_revenue_per_1000: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0)
+    expected_cost_per_1000: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0)
+    expected_profit_per_1000: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0, index=True)
+    expected_profit_low: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0)
+    expected_profit_high: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0)
+    confidence: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    price_band: Mapped[str] = mapped_column(String(32), index=True)
+    discount_band: Mapped[str] = mapped_column(String(32), index=True)
+    saturation_penalty: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    risk_penalty: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    recommended_angle: Mapped[str] = mapped_column(String(240))
+    selection_reason: Mapped[str] = mapped_column(Text)
+    calculated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
+class ProductWatchlist(TimestampMixin, Base):
+    __tablename__ = "product_watchlists"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    name: Mapped[str] = mapped_column(String(180))
+    product_id: Mapped[str | None] = mapped_column(ForeignKey("products.id"), index=True)
+    merchant_id: Mapped[str | None] = mapped_column(ForeignKey("merchants.id"), index=True)
+    category: Mapped[str | None] = mapped_column(String(160), index=True)
+    rule_type: Mapped[str] = mapped_column(String(40), index=True)
+    threshold: Mapped[Decimal] = mapped_column(Numeric(12, 4))
+    status: Mapped[str] = mapped_column(String(32), default="active", index=True)
+    last_value: Mapped[Decimal | None] = mapped_column(Numeric(12, 4))
+    last_evaluated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    triggered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class KeywordPerformance(Base):
+    __tablename__ = "keyword_performance"
+    __table_args__ = (Index("ix_keyword_performance_period", "keyword_id", "period_end"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    keyword_id: Mapped[str] = mapped_column(ForeignKey("keywords.id", ondelete="CASCADE"), index=True)
+    content_id: Mapped[str | None] = mapped_column(ForeignKey("content_variants.id", ondelete="CASCADE"), index=True)
+    impressions: Mapped[int] = mapped_column(Integer, default=0)
+    clicks: Mapped[int] = mapped_column(Integer, default=0)
+    conversions: Mapped[int] = mapped_column(Integer, default=0)
+    revenue: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0)
+    cost: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0)
+    profit: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0)
+    period_start: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    period_end: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    source: Mapped[str] = mapped_column(String(80), default="derived")
+    confidence: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
