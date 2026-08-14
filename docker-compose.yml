@@ -1,0 +1,112 @@
+name: dealforge
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-dealforge}
+      POSTGRES_USER: ${POSTGRES_USER:-dealforge}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dealforge}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dealforge} -d ${POSTGRES_DB:-dealforge}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-dealforge}:${POSTGRES_PASSWORD:-dealforge}@postgres:5432/${POSTGRES_DB:-dealforge}
+      REDIS_URL: redis://redis:6379/0
+      MEDIA_ROOT: /app/media/generated
+    command: ["sh", "-c", "alembic upgrade head && uvicorn apps.api.main:app --host 0.0.0.0 --port 8000"]
+    volumes:
+      - media_data:/app/media/generated
+    ports: ["8000:8000"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/api/v1/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-dealforge}:${POSTGRES_PASSWORD:-dealforge}@postgres:5432/${POSTGRES_DB:-dealforge}
+      REDIS_URL: redis://redis:6379/0
+      MEDIA_ROOT: /app/media/generated
+    command: ["celery", "-A", "workers.celery_app:celery_app", "worker", "--loglevel=INFO", "--concurrency=2"]
+    volumes:
+      - media_data:/app/media/generated
+    depends_on:
+      api: { condition: service_healthy }
+    restart: unless-stopped
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-dealforge}:${POSTGRES_PASSWORD:-dealforge}@postgres:5432/${POSTGRES_DB:-dealforge}
+      REDIS_URL: redis://redis:6379/0
+      MEDIA_ROOT: /app/media/generated
+    command: ["celery", "-A", "workers.celery_app:celery_app", "beat", "--loglevel=INFO"]
+    depends_on:
+      api: { condition: service_healthy }
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./apps/web
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    environment:
+      API_INTERNAL_URL: http://api:8000
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      ADMIN_API_KEY: ${ADMIN_API_KEY:-demo-admin-change-me}
+    ports: ["3000:3000"]
+    depends_on:
+      api: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/overview"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  media_data:

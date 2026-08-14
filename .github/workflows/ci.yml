@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "codex/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: dealforge_test
+          POSTGRES_USER: dealforge
+          POSTGRES_PASSWORD: dealforge
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U dealforge -d dealforge_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://dealforge:dealforge@localhost:5432/dealforge_test
+      DEMO_MODE: "false"
+      MEDIA_ROOT: /tmp/dealforge-media
+      ADMIN_API_KEY: test-only-ci-admin-key
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e '.[dev]' pip-audit
+      - run: alembic upgrade head
+      - run: alembic check
+      - run: pytest --cov=apps.api --cov=workers --cov-report=term-missing
+      - run: ruff format --check apps workers tests
+      - run: ruff check apps workers tests
+      - run: mypy apps workers
+      - run: pip-audit
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:web
+      - run: npm run typecheck:web
+      - run: npm run test:web
+      - run: npm run build:web
+        env:
+          API_INTERNAL_URL: http://localhost:8000
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+      - run: npm audit --audit-level=high
+
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker compose config --quiet
+      - run: docker build -f Dockerfile.api -t dealforge-api:test .
+      - run: docker build -f apps/web/Dockerfile -t dealforge-web:test apps/web

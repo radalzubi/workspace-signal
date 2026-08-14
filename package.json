@@ -1,0 +1,14 @@
+{
+  "name": "dealforge",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["apps/web"],
+  "scripts": {
+    "dev:web": "npm --workspace @dealforge/web run dev",
+    "build:web": "npm --workspace @dealforge/web run build",
+    "lint:web": "npm --workspace @dealforge/web run lint",
+    "typecheck:web": "npm --workspace @dealforge/web run typecheck",
+    "test:web": "npm --workspace @dealforge/web run test"
+  }
+}
+

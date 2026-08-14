@@ -1,0 +1,27 @@
+{
+  "deal_alert": {
+    "label": "Deal alert",
+    "hook_patterns": ["A smarter desk upgrade for {price}", "Current deal: save {discount}% on this desk upgrade"],
+    "accent": "#F97316"
+  },
+  "under_50": {
+    "label": "Under $50",
+    "hook_patterns": ["Small-desk upgrade under $50", "Make more room for less than $50"],
+    "accent": "#22C55E"
+  },
+  "price_drop": {
+    "label": "Price drop",
+    "hook_patterns": ["Our system detected a price drop", "Now {below_average}% below its recent average"],
+    "accent": "#38BDF8"
+  },
+  "problem_solution": {
+    "label": "Problem / solution",
+    "hook_patterns": ["Tiny desk? Reclaim your workspace", "Your desk does not need to feel this crowded"],
+    "accent": "#A78BFA"
+  },
+  "small_space": {
+    "label": "Small space",
+    "hook_patterns": ["Built for compact workspaces", "One practical upgrade for a tiny desk"],
+    "accent": "#FACC15"
+  }
+}
