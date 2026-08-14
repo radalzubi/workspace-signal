@@ -6,6 +6,11 @@ history, scores opportunities by expected profit, creates original social
 content, renders Pin/video assets, enforces compliance gates, publishes through
 official APIs, and reconciles clicks, conversions, revenue, and costs.
 
+The expanded commercial-intelligence layer adds structured keyword intent and
+clusters, relevant-board selection, grounded SEO briefs, keyword-to-profit
+attribution, affiliate-program research/scoring, confidence-aware product
+opportunities, price/discount-band learning, watchlists, and guarded SEO tests.
+
 The default experience is safe and credential-free:
 
 - `DEMO_MODE=true` seeds realistic products, 90 days of observed prices, deals,
@@ -189,6 +194,14 @@ tests/                    Safety and commercial-logic tests
 docs/                     Beginner-friendly operating documentation
 ```
 
+Commercial intelligence guides:
+
+- [Pinterest SEO](docs/PINTEREST_SEO.md)
+- [Affiliate discovery](docs/AFFILIATE_DISCOVERY.md)
+- [Product discovery](docs/PRODUCT_DISCOVERY.md)
+- [Opportunity scoring](docs/OPPORTUNITY_SCORING.md)
+- [SEO experimentation](docs/SEO_EXPERIMENTATION.md)
+- [Consolidated SEO and affiliate-profit operating guide](docs/SEO_AFFILIATE_MASTER_GUIDE.md)
+
 The repository never contains credentials. Run secret scanning before every
 release and keep `.env` out of Git.
-
