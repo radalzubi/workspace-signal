@@ -13,10 +13,13 @@ export function proxy(request: NextRequest) {
 
   const user = process.env.DASHBOARD_USER;
   const password = process.env.DASHBOARD_PASSWORD;
-  if (!user || !password) {
+  if (!user || !password || password.length < 16 || user === password) {
     return new NextResponse("DealForge dashboard is unavailable until private access is configured.", {
       status: 503,
-      headers: { "Cache-Control": "no-store" },
+      headers: {
+        "Cache-Control": "no-store",
+        "X-Robots-Tag": "noindex, nofollow, noarchive",
+      },
     });
   }
 
@@ -27,12 +30,16 @@ export function proxy(request: NextRequest) {
       status: 401,
       headers: {
         "Cache-Control": "no-store",
+        "X-Robots-Tag": "noindex, nofollow, noarchive",
         "WWW-Authenticate": 'Basic realm="DealForge Operations", charset="UTF-8"',
       },
     });
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  response.headers.set("Cache-Control", "no-store");
+  response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+  return response;
 }
 
 export const config = {
