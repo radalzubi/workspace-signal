@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     auto_publish: bool = False
     admin_api_key: SecretStr = SecretStr("demo-admin-change-me")
     allowed_origins: str = "http://localhost:3000"
+    allowed_hosts: str = "localhost,127.0.0.1,testserver"
+    max_upload_bytes: int = 5 * 1024 * 1024
 
     business_name: str = "Workspace Signal"
     niche: str = "US home-office and workspace upgrades"
@@ -106,11 +108,34 @@ class Settings(BaseSettings):
             raise ValueError("MIN_POSTS_PER_DAY cannot exceed MAX_POSTS_PER_DAY")
         if self.enable_paid_ads and min(self.daily_ad_budget, self.monthly_ad_budget, self.max_spend_per_content) <= 0:
             raise ValueError("Paid ads require all hard budgets to be positive")
+        if self.max_upload_bytes < 1024 or self.max_upload_bytes > 25 * 1024 * 1024:
+            raise ValueError("MAX_UPLOAD_BYTES must be between 1 KiB and 25 MiB")
+        if self.environment.lower() == "production":
+            admin_key = self.admin_api_key.get_secret_value()
+            salt = self.anonymization_salt.get_secret_value()
+            placeholders = {
+                "demo-admin-change-me",
+                "demo-salt-change-me",
+                "replace-with-at-least-32-random-characters",
+                "replace-with-a-separate-random-secret",
+            }
+            if admin_key in placeholders or len(admin_key) < 32:
+                raise ValueError("Production ADMIN_API_KEY must be a unique secret of at least 32 characters")
+            if salt in placeholders or len(salt) < 32:
+                raise ValueError("Production ANONYMIZATION_SALT must be a unique secret of at least 32 characters")
+            if "*" in self.origins:
+                raise ValueError("Production ALLOWED_ORIGINS cannot contain a wildcard")
+            if "*" in self.hosts:
+                raise ValueError("Production ALLOWED_HOSTS cannot contain a wildcard")
         return self
 
     @property
     def origins(self) -> list[str]:
         return [origin.strip() for origin in self.allowed_origins.split(",") if origin.strip()]
+
+    @property
+    def hosts(self) -> list[str]:
+        return [host.strip() for host in self.allowed_hosts.split(",") if host.strip()]
 
 
 @lru_cache
