@@ -26,6 +26,80 @@ export type Guide = {
   sections: GuideSection[];
 };
 
+export type ProductPick = {
+  slug: string;
+  name: string;
+  brand: string;
+  category: "Charging" | "Docking";
+  price: number;
+  observed: string;
+  merchantUrl: string;
+  bestFor: string;
+  facts: string[];
+  caution: string;
+  publicProgramRate: number;
+  estimatedCommissionIfApproved: number;
+};
+
+export const productPicks: ProductPick[] = [
+  {
+    slug: "anker-675-monitor-stand-dock",
+    name: "Anker 675 USB-C Docking Station (12-in-1, Monitor Stand, Wireless)",
+    brand: "Anker",
+    category: "Docking",
+    price: 249.99,
+    observed: "August 16, 2026",
+    merchantUrl: "https://www.anker.com/products/a8377",
+    bestFor: "A single product that raises a monitor, expands laptop ports, charges a phone, and routes cables.",
+    facts: ["12-in-1 dock and monitor stand", "Up to 100W host charging", "4K at 60Hz HDMI output", "10W maximum wireless charging pad"],
+    caution: "Confirm monitor footprint, laptop USB-C capabilities, operating-system support, and the complete port requirements before buying.",
+    publicProgramRate: 8,
+    estimatedCommissionIfApproved: 20,
+  },
+  {
+    slug: "anker-nano-13-in-1-dock",
+    name: "Anker Nano Docking Station (13-in-1, Triple Display, Built-In Removable Hub)",
+    brand: "Anker",
+    category: "Docking",
+    price: 149.99,
+    observed: "August 16, 2026",
+    merchantUrl: "https://www.anker.com/products/a83c3-13-in-1-docking-station-with-built-in-hub?variant=45906851856534",
+    bestFor: "A hybrid desk-and-travel setup that benefits from a removable hub.",
+    facts: ["13-in-1 dock with detachable 6-in-1 hub", "Up to 100W host charging", "10Gbps maximum data transfer", "HDMI, DisplayPort, card slots, audio and Gigabit Ethernet"],
+    caution: "Display behavior depends on the laptop and operating system. Anker says the USB-C and USB-A ports do not output video, and Linux is not supported.",
+    publicProgramRate: 8,
+    estimatedCommissionIfApproved: 12,
+  },
+  {
+    slug: "anker-nano-100w-charging-station",
+    name: "Anker Nano Charging Station (7-in-1, 100W)",
+    brand: "Anker",
+    category: "Charging",
+    price: 79.99,
+    observed: "August 16, 2026",
+    merchantUrl: "https://www.anker.com/products/a91c8-100w-7-in-1-charging-station?variant=45217869201558",
+    bestFor: "A small desk that needs laptop-capable USB-C charging and AC outlets in one reachable station.",
+    facts: ["Three AC outlets, three USB-C ports and one USB-A port", "Up to 100W from one USB-C port", "1.3-inch status display", "Compact 4.76 by 2.86-inch footprint"],
+    caution: "USB output is shared across connected devices, so the 100W figure does not apply to every port simultaneously.",
+    publicProgramRate: 8,
+    estimatedCommissionIfApproved: 6.4,
+  },
+  {
+    slug: "anker-525-charging-station",
+    name: "Anker 525 Charging Station",
+    brand: "Anker",
+    category: "Charging",
+    price: 39.99,
+    observed: "August 16, 2026",
+    merchantUrl: "https://www.anker.com/products/a91c0?variant=42089536422038",
+    bestFor: "A lower-cost desk power hub for several everyday devices.",
+    facts: ["Three AC outlets", "Two USB-C and two USB-A ports", "Up to 67W from one USB-C port", "4.61 by 2.52-inch footprint"],
+    caution: "Power is divided when several USB ports are used; compare the multi-port output table with the devices you need to charge.",
+    publicProgramRate: 8,
+    estimatedCommissionIfApproved: 3.2,
+  },
+];
+
 export const guides: Guide[] = [
   {
     slug: "monitor-arm-for-small-desk",
