@@ -31,3 +31,4 @@ def db(tmp_path: Path) -> Session:
     with Session(engine, expire_on_commit=False) as session:
         yield session
     Base.metadata.drop_all(engine)
+    engine.dispose()
