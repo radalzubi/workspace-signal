@@ -11,6 +11,7 @@ export function PublicHeader() {
       </Link>
       <nav aria-label="Primary navigation">
         <Link href="/guides">Guides</Link>
+        <Link href="/picks">Product shortlist</Link>
         <Link href="/methodology">How we evaluate</Link>
         <Link href="/about">About</Link>
       </nav>
@@ -29,6 +30,7 @@ export function PublicFooter() {
       <div>
         <b>Explore</b>
         <Link href="/guides">All guides</Link>
+        <Link href="/picks">Product shortlist</Link>
         <Link href="/methodology">Editorial methodology</Link>
         <Link href="/about">About</Link>
       </div>
