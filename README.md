@@ -202,6 +202,7 @@ Commercial intelligence guides:
 - [Opportunity scoring](docs/OPPORTUNITY_SCORING.md)
 - [SEO experimentation](docs/SEO_EXPERIMENTATION.md)
 - [Consolidated SEO and affiliate-profit operating guide](docs/SEO_AFFILIATE_MASTER_GUIDE.md)
+- [Affiliate and Pinterest account setup packet](docs/ACCOUNT_SETUP_PACKET.md)
 
 The repository never contains credentials. Run secret scanning before every
 release and keep `.env` out of Git.
