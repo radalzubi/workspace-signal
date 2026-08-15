@@ -57,6 +57,15 @@ export default function Home() {
         <div className="guide-grid compact">{guides.slice(3, 9).map((guide) => <GuideCard guide={guide} key={guide.slug} />)}</div>
       </section>
 
+      <section className="public-section shortlist-callout">
+        <div>
+          <p className="public-kicker">Real product research</p>
+          <h2>See the first verified shortlist.</h2>
+          <p>Current merchant prices, grounded product facts, fit notes, and the commercial status of every link.</p>
+        </div>
+        <Link className="public-primary" href="/picks">View product shortlist <span>→</span></Link>
+      </section>
+
       <section className="public-section"><EditorialNotice /></section>
 
       <section className="public-cta">
