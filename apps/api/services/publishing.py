@@ -87,6 +87,10 @@ class PinterestPublisher(SocialPublisher):
         payload = self._request("GET", "/boards", params={"page_size": 100}).json()
         return cast(list[dict[str, Any]], payload.get("items", []))
 
+    def create_board(self, name: str, description: str) -> dict[str, Any]:
+        payload = {"name": name[:180], "description": description[:500], "privacy": "PUBLIC"}
+        return cast(dict[str, Any], self._request("POST", "/boards", json=payload).json())
+
     def publish(self, variant: ContentVariant, link: AffiliateLink) -> dict[str, Any]:
         selected_board_id = (
             variant.idea.brief.board.external_id
