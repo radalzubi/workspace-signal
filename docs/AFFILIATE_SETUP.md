@@ -27,3 +27,6 @@ Never cloak a destination or remove required disclosure. The default copy is:
 “Affiliate link — I may earn a commission from qualifying purchases.” Replace it
 with the exact program/platform requirement where necessary.
 
+For the current real-product launch sequence, verified product records, the
+Anker application copy, a permission email, and activation gates, see
+[Real product launch](REAL_PRODUCT_LAUNCH.md).
