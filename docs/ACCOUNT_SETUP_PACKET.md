@@ -1,177 +1,176 @@
-# Paquete de alta: afiliados + Pinterest para DealForge
+# DealForge affiliate and Pinterest account setup packet
 
-Investigación verificada: 2026-08-15. Mercado objetivo: Estados Unidos.
-Nicho inicial: productos para escritorios pequeños y oficinas domésticas.
+Research verified: 2026-08-15. Target market: United States.
+Initial niche: small-space desk and home-office products.
 
-Este documento deja preparada la parte que puede completarse sin aceptar
-contratos, aportar identidad fiscal o revelar credenciales. Las tasas publicadas
-son información previa a la solicitud; el contrato que aparezca dentro de cada
-cuenta aprobada prevalece siempre.
+This document prepares everything that can be completed without accepting a
+contract, submitting tax or identity information, or revealing credentials.
+Published rates are pre-application information; the current agreement shown
+inside each approved account always takes precedence.
 
-## Recomendación ejecutiva
+## Executive recommendation
 
-No conviene solicitar veinte programas a la vez. La secuencia de mayor densidad
-de valor es:
+Do not apply to twenty programs at once. Use this launch sequence:
 
-1. Publicar el sitio editorial de `Compact Desk Finds` con dominio propio.
-2. Crear una cuenta de publisher en Impact.
-3. Solicitar Target, Anker y UPLIFT desde Impact.
-4. Solicitar Humanscale y Grovemade directamente.
-5. Crear CJ para Branch y, si existe elegibilidad estadounidense, Herman Miller.
-6. Añadir Walmart, Wayfair, VersaDesk y Autonomous después de la primera ronda.
-7. Solicitar Amazon solamente cuando el sitio tenga contenido sólido y pueda
-   generar tres ventas calificadas dentro de 180 días.
+1. Publish the `Compact Desk Finds` editorial site on an owned domain.
+2. Create an Impact publisher account.
+3. Apply to Target, Anker, and UPLIFT through Impact.
+4. Apply directly to Humanscale and Grovemade.
+5. Create a CJ account for Branch and, if US eligibility exists, Herman Miller.
+6. Add Walmart, Wayfair, VersaDesk, and Autonomous after the first round.
+7. Apply to Amazon only when the site has strong content and can generate three
+   qualified sales within 180 days.
 
-Impact tiene el mayor apalancamiento inicial porque una sola cuenta puede dar
-acceso a Target, Anker y UPLIFT, además de catálogos, acciones y reportes mediante
-API una vez aprobadas las relaciones.
+Impact provides the highest initial leverage because one account may unlock
+Target, Anker, and UPLIFT, plus catalog, action, and reporting APIs after those
+merchant relationships are approved.
 
-## Ranking de programas
+## Program ranking
 
-### Nivel 1 — solicitar primero
+### Tier 1 — apply first
 
-#### 1. Target Partners — prioridad máxima
+#### 1. Target Partners — highest priority
 
-- Solicitud: https://partners.target.com/
-- Red: Impact.
-- Información confirmada: hasta 8% según categoría; cookie de 7 días; acepta
-  publishers internacionales si Impact admite su país y el contenido se dirige
-  principalmente al mercado estadounidense.
-- Ventaja: catálogo amplio, reconocimiento fuerte, múltiples compras dentro de
-  la ventana y términos que contemplan sitios y ubicaciones digitales como redes
-  sociales.
-- Riesgo pendiente: la tasa real por categoría, acceso al feed, uso de imágenes,
-  enlace directo desde Pinterest y redirección `/go/` deben confirmarse en el
-  contrato o con `targetpartners@target.com`.
-- Veredicto: mejor programa base para obtener variedad y datos de conversión.
+- Application: https://partners.target.com/
+- Network: Impact.
+- Confirmed: up to 8% depending on category; seven-day cookie; international
+  publishers may apply if Impact supports their country and the content mainly
+  targets the US market.
+- Advantage: broad catalog, strong consumer recognition, and terms that
+  contemplate websites and digital properties such as social platforms.
+- Must confirm: actual desk-category rates, feed access, image rights, direct
+  Pinterest linking, and use of DealForge's `/go/` redirect. Confirm through
+  the contract or `targetpartners@target.com`.
+- Verdict: the best base program for product variety and conversion data.
 
-#### 2. Anker — mejor economía publicada para accesorios
+#### 2. Anker — strongest published accessory economics
 
-- Solicitud oficial: https://www.anker.com/become-an-affiliate
-- Redes ofrecidas por la página: Impact y Rakuten Advertising.
-- Información confirmada: 8% de comisión, cookie de 30 días, enlaces profundos,
-  data feed, promociones y admisión de plataformas sociales.
-- Productos adecuados: cargadores compactos, hubs, estaciones de carga, cables y
-  accesorios de energía para escritorio.
-- Riesgo pendiente: las imágenes fuera del feed requieren aprobación caso por
-  caso; debe confirmarse Pinterest de forma explícita.
-- Veredicto: solicitar por Impact para evitar una segunda integración inicial.
+- Official application: https://www.anker.com/become-an-affiliate
+- Networks: Impact and Rakuten Advertising.
+- Confirmed: 8% commission, 30-day cookie, deep links, data feed, promotions,
+  and support for social platforms.
+- Suitable products: compact chargers, hubs, charging stations, cables, and
+  desk power accessories.
+- Must confirm: explicit Pinterest permission and media usage outside the
+  licensed feed.
+- Verdict: apply through Impact first to avoid a second initial integration.
 
-#### 3. Humanscale — mejor ajuste exacto y activos autorizados
+#### 3. Humanscale — best exact niche fit and approved assets
 
-- Solicitud: https://shop.humanscale.com/pages/affiliate-program
-- Red: el sitio no identifica públicamente la plataforma; tratar como programa
-  directo hasta recibir el contrato.
-- Información confirmada: comisión desde 5%, ventana de 21 días, solicitantes
-  internacionales, panel de seguimiento y activos oficiales para afiliados
-  aprobados. Revisión estimada por Humanscale: 5–10 días hábiles.
-- Productos adecuados: monitor arms, escritorios compactos Float, iluminación,
-  accesorios y ergonomía.
-- Veredicto: excelente para Pins de alta intención y ticket elevado.
+- Application: https://shop.humanscale.com/pages/affiliate-program
+- Network: not publicly identified; treat as direct until the agreement names
+  the platform.
+- Confirmed: commission starting at 5%, 21-day window, international
+  applicants, reporting dashboard, and official assets for approved affiliates.
+  Humanscale estimates a 5–10 business-day review.
+- Suitable products: monitor arms, compact Float desks, lighting, accessories,
+  and ergonomic products.
+- Verdict: excellent for high-intent Pins and higher-value purchases.
 
-#### 4. Grovemade — mejor producto visual para Pinterest
+#### 4. Grovemade — strongest visual Pinterest fit
 
-- Solicitud: https://grovemade.refersion.com/?oid=71790
-- Red: Refersion.
-- Información confirmada: 5%, cookie de 30 días, pago mensual por PayPal y guía
-  de marca. Los escritorios Grovemade tienen 0% y quedan excluidos; los accesorios
-  sí son el foco útil.
-- Productos adecuados: desk shelves, trays, desk pads, organizers y accesorios
-  de alta estética.
-- Riesgo: catálogo más premium y conversión probablemente menor; medir EPC real.
-- Veredicto: fuerte potencial creativo y de guardados, pero asignar volumen según
-  beneficio, no estética.
+- Application: https://grovemade.refersion.com/?oid=71790
+- Network: Refersion.
+- Confirmed: 5%, 30-day cookie, monthly PayPal payments, and brand guidelines.
+  Grovemade desks explicitly pay 0%; eligible accessories are the useful focus.
+- Suitable products: desk shelves, trays, desk pads, organizers, and premium
+  visual accessories.
+- Risk: premium pricing may reduce conversion. Allocate volume according to
+  measured EPC and profit, not visual appeal alone.
+- Verdict: strong creative potential, subject to actual conversion economics.
 
-#### 5. UPLIFT Desk — alto AOV, términos económicos privados
+#### 5. UPLIFT Desk — high AOV with private economics
 
-- Solicitud: https://www.upliftdesk.com/affiliate/
-- Red: Impact.
-- Información confirmada: cookie de 30 días, 30 días de devolución, manager
-  dedicado, productos o descuentos potenciales y comisión competitiva no
-  publicada.
-- Productos adecuados: escritorios, storage, accesorios, separadores y
-  ergonomía.
-- Riesgo pendiente: comisión, alcance internacional, feed, derechos de imágenes,
-  Pinterest y enlaces directos.
-- Veredicto: solicitar temprano; no modelar rentabilidad hasta ver el contrato.
+- Application: https://www.upliftdesk.com/affiliate/
+- Network: Impact.
+- Confirmed: 30-day cookie, 30-day return period, dedicated manager, potential
+  products or discounts, and an unpublished competitive commission.
+- Suitable products: desks, storage, accessories, dividers, and ergonomics.
+- Must confirm: commission, international eligibility, feed, image rights,
+  Pinterest, and direct-linking rules.
+- Verdict: apply early, but do not model profitability until the agreement and
+  rate card are available.
 
-### Nivel 2 — solicitar tras completar el perfil
+### Tier 2 — apply after completing the publisher profile
 
 #### 6. Branch Furniture
 
-- Solicitud: https://www.branchfurniture.com/pages/affiliate-program
-- Red: CJ.
-- Confirmado: catálogo exacto, AOV y conversión descritos como altos, manager
-  dedicado; comisión no publicada.
-- Pendiente: país, cookie, feed, imágenes, Pinterest y direct linking.
+- Application: https://www.branchfurniture.com/pages/affiliate-program
+- Network: CJ.
+- Confirmed: exact category fit, dedicated manager, and official claims of high
+  AOV and conversion; commission is not public.
+- Must confirm: country, cookie, feed, media rights, Pinterest, and direct links.
 
 #### 7. Walmart Affiliates
 
-- Solicitud: https://affiliates.walmart.com/
-- Red: Impact.
-- Confirmado: 1–4%, cookie de 3 días, deep links, data feeds, reportes diarios y
-  reversiones por devoluciones.
-- Riesgo: margen inferior y el acuerdo exige propiedades autorizadas. Registrar
-  el sitio y Pinterest, y obtener confirmación escrita antes de enlazar Pins
-  directamente.
+- Application: https://affiliates.walmart.com/
+- Network: Impact.
+- Confirmed: 1–4%, three-day cookie, deep links, data feeds, daily reporting,
+  and commission reversals for returns.
+- Risk: lower margins and an agreement that requires authorized properties.
+  Declare both the website and Pinterest profile, then obtain written approval
+  before linking Pins directly.
 
 #### 8. Wayfair Affiliate / Creator
 
-- Información y entrada: https://www.aboutwayfair.com/partner-with-us
-- Confirmado: más de dos millones de productos de hogar y programa creator con
-  enlaces afiliados.
-- Pendiente: red, tasa, cookie, API/feed, país y uso de Pinterest. No importar
-  condiciones históricas de terceros como si fueran actuales.
+- Entry point: https://www.aboutwayfair.com/partner-with-us
+- Confirmed: more than two million home products and a creator program with
+  affiliate links.
+- Must confirm: current network, rate, cookie, API/feed, country eligibility,
+  image rights, and Pinterest usage. Do not treat historical third-party terms
+  as current facts.
 
 #### 9. VersaDesk
 
-- Solicitud: https://versadesk.com/pages/versadesk-affiliate-program
-- Confirmado: la página publica una estructura de 6–10% y productos ergonómicos
-  relevantes.
-- Pendiente: cookie, plataforma, feed/API, derechos de medios y territorio.
+- Application: https://versadesk.com/pages/versadesk-affiliate-program
+- Confirmed: the official page publishes a 6–10% structure and relevant
+  ergonomic products.
+- Must confirm: cookie, platform, feed/API, media rights, and territory.
 
 #### 10. Autonomous
 
-- Solicitud creator: https://www.autonomous.ai/influencer-review
-- Confirmado: 2% y posibilidad de muestras; el material oficial histórico
-  identifica Rakuten, pero debe reconfirmarse en el alta actual.
-- Ventaja: alto AOV y fuerte ajuste temático.
-- Riesgo: 2% puede perder frente a programas de menor AOV pero mayor conversión.
+- Creator application: https://www.autonomous.ai/influencer-review
+- Confirmed: 2% and potential product samples; historical official material
+  identifies Rakuten, but the current network must be reconfirmed.
+- Advantage: high AOV and strong topical fit.
+- Risk: 2% may underperform lower-AOV programs with stronger conversion.
 
-### Nivel 3 — estratégico, no inicial
+### Tier 3 — strategic, not initial
 
 #### 11. Amazon Associates US
 
-- Solicitud: https://affiliate-program.amazon.com/
-- Confirmado: Furniture/Home/Home Improvement al 4%; otras categorías varían;
-  sesión estándar de 24 horas. La revisión requiere al menos tres ventas
-  calificadas dentro de 180 días y contenido original robusto.
-- Pinterest no aparece entre las redes sociales aceptadas para solicitar una
-  cuenta. El camino conservador es Pinterest → artículo propio → Amazon.
-- La Creators API solo puede solicitarse después de la aceptación final y ventas
-  calificadas: https://affiliate-program.amazon.com/creatorsapi/docs/en-us/onboarding/register-for-creators-api
-- Restricción crítica: no usar el redirector `/go/` para Amazon hasta confirmar
-  que no oculta el origen. No copiar, almacenar ni transformar imágenes de
-  Amazon fuera de las licencias y reglas de la API.
+- Application: https://affiliate-program.amazon.com/
+- Confirmed: Furniture, Home, and Home Improvement currently publish 4%; other
+  categories vary; the standard session is 24 hours. Account review requires at
+  least three qualified sales within 180 days and robust original content.
+- Pinterest is not in Amazon's accepted social-network application list. The
+  conservative path is Pinterest → owned editorial article → Amazon.
+- Creators API access is available only after final acceptance and sales:
+  https://affiliate-program.amazon.com/creatorsapi/docs/en-us/onboarding/register-for-creators-api
+- Critical restriction: do not use DealForge's `/go/` redirect for Amazon until
+  it is confirmed not to obscure the traffic source. Do not copy, cache, or
+  transform Amazon images outside the API licenses and operating policies.
 
 #### 12. Herman Miller
 
-- Solicitud/información: https://store.hermanmiller.com/faq-affiliate-program.html?lang=en_US
-- Red: CJ; feed disponible después de la aprobación.
-- Confirmado: actualmente no acepta partners fuera de Estados Unidos y prohíbe
-  modificar sus creatividades.
-- Usar solo si el titular contractual califica realmente como partner de EE. UU.
+- Information: https://store.hermanmiller.com/faq-affiliate-program.html?lang=en_US
+- Network: CJ; a product feed is available after approval.
+- Confirmed: the program currently does not accept partners outside the United
+  States and prohibits modification of supplied creative assets.
+- Use only if the contractual applicant genuinely qualifies as a US partner.
 
-## Por qué no se marca ningún programa como “Pinterest aprobado” todavía
+## Why no program is marked “Pinterest approved” yet
 
-Pinterest permite enlaces de afiliado con contenido original, valor añadido,
-moderación y divulgación clara. Eso no sustituye el contrato del merchant. Aunque
-Target o Anker permitan redes sociales, “redes sociales” no prueba por sí solo que
-Pinterest, enlaces directos, redirecciones propias o reutilización de imágenes
-estén aprobados. El archivo de investigación mantiene `pinterest_allowed: null`
-hasta tener evidencia contractual o escrita.
+Pinterest permits affiliate links when content is original, useful, moderate,
+and transparently disclosed. That does not replace the merchant agreement.
+General permission for “social media” does not prove that Pinterest, direct
+affiliate links, first-party redirects, or reuse of product images are allowed.
 
-## Correo preparado para cada affiliate manager
+The research seed therefore keeps `pinterest_allowed: null` until there is
+contractual or written evidence. This prevents DealForge from treating an
+inference as permission.
+
+## Prepared email for each affiliate manager
 
 ```text
 Subject: Pinterest, product-feed and tracking permissions — Compact Desk Finds
@@ -211,31 +210,20 @@ Compact Desk Finds
 [PINTEREST PROFILE URL]
 ```
 
-## Perfil preparado para Impact, CJ, Rakuten y merchants
+## Prepared publisher profile
 
-### Nombre visible
-
-```text
-Compact Desk Finds
-```
-
-### Modelo
+Use this for Impact, CJ, Rakuten, and merchant-direct applications.
 
 ```text
-Content publisher / editorial product discovery
-```
+Display name: Compact Desk Finds
+Model: Content publisher / editorial product discovery
 
-### Descripción corta
-
-```text
+Short description:
 Compact Desk Finds helps US consumers build functional workspaces in small
 apartments and home offices through original visual guides, product comparisons,
 budget roundups and verified deal analysis.
-```
 
-### Descripción larga
-
-```text
+Long description:
 Compact Desk Finds is a US-focused editorial discovery property for people
 building functional workspaces in small apartments and home offices. We publish
 original visual guides, comparisons, budget roundups and verified deal analysis
@@ -246,38 +234,35 @@ trademark bidding, no coupon scraping, no forced clicks, no misleading scarcity
 and only approved product data and media. Our internal DealForge system measures
 outbound clicks, attributed purchases, reversals, commission and net profit so
 we allocate content based on customer utility and attributable economics.
-```
 
-### Métodos promocionales — seleccionar únicamente estos
-
-```text
+Promotional methods:
 Owned editorial website
 Organic Pinterest
 SEO / organic search
 Original product comparison and deal content
 ```
 
-No seleccionar paid search, email, cashback, coupon, loyalty, subnetwork o
-incentivized traffic salvo que realmente se implemente y el programa lo apruebe.
-Declarar tráfico real; si es cero, usar `pre-launch` o el rango mínimo verdadero.
-Nunca inventar seguidores, visitantes o ventas.
+Do not select paid search, email, cashback, coupon, loyalty, subnetwork, or
+incentivized traffic unless it has actually been implemented and approved.
+Report real traffic. If it is zero, use `pre-launch` or the lowest truthful
+range. Never invent followers, visitors, sales, or conversion data.
 
-## Activos mínimos antes de solicitar
+## Minimum assets required before applying
 
-La interfaz actual de DealForge es un sistema operativo interno, no sustituye un
-sitio editorial público. Antes de enviar solicitudes debe existir:
+DealForge is currently an internal operating dashboard; it does not replace a
+public editorial property. Before submitting applications, establish:
 
-- Dominio propio con HTTPS y correo profesional.
-- Home pública sin datos demo ni dashboard administrativo.
-- About, Contact, Privacy, Terms, Affiliate Disclosure y Editorial Methodology.
-- Al menos 10 artículos originales, recientes y útiles. Amazon recomienda como
-  referencia al menos 10 publicaciones y contenido reciente, generalmente dentro
-  de 60 días.
-- Cinco boards coherentes y contenido inicial original en Pinterest.
-- Ninguna afirmación de experiencia personal con productos no probados.
-- Enlaces y disclosures visibles cerca de cada recomendación.
+- An owned HTTPS domain and professional domain email.
+- A public home page without demo records or an administrative dashboard.
+- About, Contact, Privacy, Terms, Affiliate Disclosure, and Editorial
+  Methodology pages.
+- At least 10 original, recent, useful articles. Amazon uses at least 10 posts
+  and recent content—generally within 60 days—as application guidance.
+- At least five coherent Pinterest boards with initial original content.
+- No claims of personal experience with products not actually tested.
+- Visible links and disclosures close to every recommendation.
 
-### Disclosure recomendado para artículos
+### Recommended article disclosure
 
 ```text
 Affiliate disclosure: We may earn a commission when you purchase through links
@@ -286,34 +271,36 @@ based on product relevance, verified facts and expected customer value—not on
 which merchant pays the highest commission.
 ```
 
-### Disclosure corto para Pins
+### Short Pin disclosure
 
 ```text
 Affiliate link — we may earn a commission from qualifying purchases.
 ```
 
-La FTC exige una divulgación clara, difícil de omitir y cercana a la
-recomendación. “Affiliate link” sin explicar la comisión puede no ser suficiente.
+The FTC requires disclosure to be clear, hard to miss, and close to the
+recommendation. “Affiliate link” by itself may not adequately explain that a
+commission is paid.
 
-## Pinterest Business — configuración preparada
+## Pinterest Business setup
 
-Pinterest indica que, en general, los afiliados deben operar una sola cuenta
-auténtica. Crear una cuenta Business gratuita:
+Pinterest generally expects affiliate publishers to operate one authentic
+account. Create a free Business account:
 
 https://help.pinterest.com/en/business/article/get-a-business-account
 
-### Perfil propuesto
+### Proposed profile
 
 ```text
 Profile name: Compact Desk Finds
-Username: compactdeskfinds (o la variante disponible más cercana)
+Username: compactdeskfinds (or the nearest available variation)
 Website: https://[DOMAIN]
-Country: United States market / usar el país legal real en datos de cuenta
+Country: target the United States market, but use the real legal country in all
+account and tax information
 Bio: Small-space desk ideas, honest comparisons, verified deals and practical
 workspace upgrades for US home offices. Affiliate links may earn us a commission.
 ```
 
-### Taxonomía inicial de boards
+### Initial board taxonomy
 
 ```text
 Small Desk Setup Ideas
@@ -339,46 +326,44 @@ Cable Management Ideas
 Cable trays, clips, sleeves and routing ideas for standing desks and small desks.
 ```
 
-No crear todos los boards posibles al inicio. Empezar con estos seis y asignar
-cada Pin únicamente al board semánticamente más relevante.
+Do not create every possible board at launch. Start with these six and assign
+each Pin only to the most semantically relevant board.
 
-### Reclamar el dominio
+### Claim the domain
 
-Guía oficial:
+Official guide:
 https://help.pinterest.com/en/business/article/claim-your-website
 
-Método recomendado: DNS TXT, porque no depende del framework de la web. Copiar el
-valor que Pinterest entregue, añadirlo al DNS y pulsar Verify. No pegar el valor
-en un repositorio público.
+DNS TXT is recommended because it does not depend on the website framework.
+Copy the value Pinterest supplies, add it to DNS, and select Verify. Do not store
+verification secrets in a public repository.
 
 ### Pinterest Tag
 
-Instalarlo solo en el dominio propio para page views y eventos que realmente
-ocurren allí. No enviar compras del merchant como si fueran ventas propias y no
-enviar datos de clientes del merchant que DealForge no tenga derecho a procesar.
-Las conversiones afiliadas deben entrar desde el reporte autorizado de la red.
+Install the tag only on the owned domain for page views and events that actually
+occur there. Do not report merchant purchases as first-party sales or transmit
+merchant customer data that DealForge has no right to process. Affiliate
+conversions should be imported from authorized network reporting.
 
-Guía oficial:
+Official guide:
 https://help.pinterest.com/en-gb/business/article/install-the-pinterest-tag
 
-## Pinterest Developer API — alta preparada
+## Pinterest Developer API setup
 
-### Enlaces
+### Official links
 
-- My Apps / conexión: https://developers.pinterest.com/apps/
-- Guía: https://developers.pinterest.com/docs/getting-started/connect-app/
+- My Apps: https://developers.pinterest.com/apps/
+- Connect an app: https://developers.pinterest.com/docs/getting-started/connect-app/
 - Access tiers: https://developers.pinterest.com/docs/key-concepts/access-tiers/
-- OAuth y scopes: https://developers.pinterest.com/docs/getting-started/set-up-authentication-and-authorization/
-- Crear Pins: https://developers.pinterest.com/docs/api/v5/pins-create/
-- Analytics orgánico: https://developers.pinterest.com/docs/analytics-and-reports/organic-reporting/
+- OAuth and scopes: https://developers.pinterest.com/docs/getting-started/set-up-authentication-and-authorization/
+- Create Pins: https://developers.pinterest.com/docs/api/v5/pins-create/
+- Organic analytics: https://developers.pinterest.com/docs/analytics-and-reports/organic-reporting/
 
-### Respuestas propuestas para la solicitud
+### Proposed application answers
 
 ```text
 App name: DealForge Publisher
-
 Company/app website: https://[DOMAIN]
-
 Privacy policy URL: https://[DOMAIN]/privacy
 
 App description:
@@ -407,7 +392,7 @@ We store Pinterest IDs and aggregate performance metrics needed for attribution.
 We do not sell Pinterest data or collect Pinterest user passwords.
 ```
 
-### Scopes actuales requeridos por DealForge
+### Scopes currently required by DealForge
 
 ```text
 boards:read
@@ -416,80 +401,79 @@ pins:read
 pins:write
 ```
 
-No solicitar `ads`, `billing`, `catalogs` o `biz_access` durante la fase orgánica.
-El callback ya existe en DealForge:
+Do not request `ads`, `billing`, `catalogs`, or `biz_access` during the organic
+launch phase. DealForge already provides the callback:
 
 ```text
 Local test: http://localhost:8000/api/v1/integrations/pinterest/callback
 Production: https://[API_DOMAIN]/api/v1/integrations/pinterest/callback
 ```
 
-Pinterest exige coincidencia exacta y prohíbe que ese URI haga una segunda
-redirección. Añadir ambos URI en My Apps si ambos se utilizan.
+Pinterest requires an exact redirect-URI match and prohibits that URI from
+performing a second redirect. Register both URIs in My Apps if both are used.
 
 ### Trial → Standard
 
-Trial permite probar API y analytics, pero los Pins/boards creados son visibles
-solo para el creador. Para producción se necesita Standard. Pinterest exige un
-video que muestre OAuth y una acción real incluso si la app tendrá un solo
-usuario.
-
-Guion del video preparado:
+Trial supports API and analytics testing, but Pins and boards created through
+Trial are visible only to the creator. Production publishing requires Standard.
+Pinterest requires a video showing OAuth and a real API operation even when the
+app has only one user.
 
 ```text
-1. Mostrar DealForge sin secretos visibles.
-2. Abrir Connect Pinterest.
-3. Mostrar la pantalla OAuth oficial y los scopes mínimos.
-4. Autorizar la cuenta Business.
-5. Mostrar que DealForge recibe el callback y almacena el token cifrado.
-6. Listar boards propios.
-7. Crear un Pin original de prueba en un board propio.
-8. Recuperar el Pin y sus métricas.
-9. Mostrar Privacy Policy y explicar retención y eliminación de datos.
+1. Show DealForge without exposing secrets.
+2. Open Connect Pinterest.
+3. Show the official OAuth screen and minimum scopes.
+4. Authorize the Business account.
+5. Show DealForge receiving the callback and encrypting the token.
+6. List owned boards.
+7. Create an original test Pin on an owned board.
+8. Retrieve the Pin and its metrics.
+9. Show the Privacy Policy and explain data retention and deletion.
 ```
 
-Pinterest documenta access tokens de 30 días y refresh tokens continuos de 60
-días, renovables. DealForge cifra el resultado OAuth, pero antes de producción
-debe completarse y probarse la renovación automática continua.
+Pinterest documents 30-day access tokens and 60-day continuous refresh tokens
+that can be renewed. DealForge encrypts the OAuth result, but continuous token
+renewal still needs to be completed and tested before production. This is an
+engineering task, not an operator account-setup task.
 
-## APIs que se conectarán después de la aprobación
+## APIs to connect after approval
 
-### Impact Publisher API — primera integración recomendada
+### Impact Publisher API — recommended first integration
 
 - Portal: https://integrations.impact.com/impact-publisher
-- Catálogos: `/Mediapartners/{AccountSID}/Catalogs`
-- Búsqueda: `/Mediapartners/{AccountSID}/Catalogs/ItemSearch`
-- Conversiones: `/Mediapartners/{AccountSID}/Actions`
-- Reportes: `/Mediapartners/{AccountSID}/Reports`
-- Credenciales: `AccountSID` + `AuthToken`; el token es secreto.
+- Catalogs: `/Mediapartners/{AccountSID}/Catalogs`
+- Search: `/Mediapartners/{AccountSID}/Catalogs/ItemSearch`
+- Conversions: `/Mediapartners/{AccountSID}/Actions`
+- Reports: `/Mediapartners/{AccountSID}/Reports`
+- Credentials: `AccountSID` and secret `AuthToken`.
 
-Impact permite buscar precio, precio original, descuento, stock, GTIN, categoría,
-URL e imagen, y recuperar acciones con payout e items. Es la mejor primera fuente
-para DealForge cuando Target/Anker/UPLIFT habiliten catálogos.
+Impact can expose current price, original price, discount, stock, GTIN,
+category, URL, image, payout, and conversion items. It is the best first data
+source once Target, Anker, or UPLIFT grants catalog access.
 
 ### CJ Publisher APIs
 
-- Alta publisher: https://public.cj.com/signup/publisher
-- Portal técnico: https://developers.cj.com/
-- Capacidades: Product Feed, Advertiser Lookup, Link Search, Program Terms y
+- Publisher signup: https://public.cj.com/signup/publisher
+- Developer portal: https://developers.cj.com/
+- Capabilities: Product Feed, Advertiser Lookup, Link Search, Program Terms, and
   Commission Detail.
-- Credencial: Personal Access Token; nunca compartir en chat.
+- Credential: Personal Access Token; never share it in chat.
 
 ### Rakuten Advertising Publisher APIs
 
-- Alta: https://rakutenadvertising.com/
+- Signup: https://rakutenadvertising.com/
 - API: https://developers.rakutenadvertising.com/
-- Capacidades: Product Search, Deep Links, Events, reports y advertisers.
-- Product Search usa bearer token y actualmente devuelve XML.
+- Capabilities: Product Search, Deep Links, Events, reports, and advertisers.
+- Product Search uses a bearer token and currently returns XML.
 
 ### Amazon Creators API
 
-- Registro posterior a aceptación:
+- Registration after final acceptance:
   https://affiliate-program.amazon.com/creatorsapi/docs/en-us/onboarding/register-for-creators-api
-- No existe acceso inmediato para una cuenta nueva; no bloquear el MVP esperando
-  esta API.
+- A new account does not receive immediate access. Do not block the MVP waiting
+  for this API.
 
-## Formulario de retorno — pegar en el chat SIN secretos
+## Paste-back form — return this in chat without secrets
 
 ```text
 PUBLIC SETUP
@@ -538,12 +522,12 @@ CJ personal access token configured: yes/no
 Rakuten bearer credentials configured: yes/no
 ```
 
-Nunca pegar contraseñas, API secrets, access/refresh tokens, AuthTokens, datos
-bancarios, TIN/SSN/EIN, documentos de identidad ni códigos de recuperación. Poner
-los secretos directamente en `.env` local o en el secret manager del hosting y
-responder únicamente `configured: yes`.
+Never paste passwords, API secrets, access or refresh tokens, AuthTokens, bank
+details, TIN/SSN/EIN values, identity documents, or recovery codes. Store secrets
+directly in the local `.env` file or the hosting secret manager and report only
+`configured: yes`.
 
-## Fuentes regulatorias y de plataforma
+## Regulatory and platform sources
 
 - Pinterest affiliate policy:
   https://policy.pinterest.com/en/commercial-and-branded-content-guidelines
@@ -554,7 +538,7 @@ responder únicamente `configured: yes`.
 - FTC affiliate disclosures:
   https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking
 
-Las reglas de Pinterest permiten afiliación moderada y original, pero cada
-merchant puede imponer condiciones más estrictas. La FTC aplica a contenido que
-afecta razonablemente a consumidores estadounidenses incluso si el publisher
-publica desde otro país.
+Pinterest permits moderate, original affiliate activity, but each merchant may
+impose stricter terms. FTC disclosure requirements can apply when content can
+reasonably affect US consumers even if the publisher operates from another
+country.
