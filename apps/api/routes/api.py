@@ -88,22 +88,22 @@ def readiness(db: Session = Depends(get_db)) -> dict[str, str]:
     return {"status": "ready", "database": "ok"}
 
 
-@router.get("/overview")
+@router.get("/overview", dependencies=[Depends(require_admin)])
 def get_overview(db: Session = Depends(get_db)) -> dict[str, Any]:
     return {**overview(db), **rankings(db)}
 
 
-@router.get("/products", response_model=list[ProductOut])
+@router.get("/products", response_model=list[ProductOut], dependencies=[Depends(require_admin)])
 def products(limit: int = Query(100, ge=1, le=500), db: Session = Depends(get_db)) -> list[Product]:
     return list(db.scalars(select(Product).order_by(Product.created_at.desc()).limit(limit)).all())
 
 
-@router.get("/deals", response_model=list[DealOut])
+@router.get("/deals", response_model=list[DealOut], dependencies=[Depends(require_admin)])
 def deals(db: Session = Depends(get_db)) -> list[Deal]:
     return list(db.scalars(select(Deal).options(selectinload(Deal.product)).order_by(Deal.deal_score.desc())).all())
 
 
-@router.get("/content", response_model=list[ContentOut])
+@router.get("/content", response_model=list[ContentOut], dependencies=[Depends(require_admin)])
 def content(status: str | None = None, db: Session = Depends(get_db)) -> list[ContentVariant]:
     query = select(ContentVariant).order_by(ContentVariant.created_at.desc())
     if status:
@@ -111,7 +111,7 @@ def content(status: str | None = None, db: Session = Depends(get_db)) -> list[Co
     return list(db.scalars(query).all())
 
 
-@router.get("/publications")
+@router.get("/publications", dependencies=[Depends(require_admin)])
 def publications(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     rows = db.scalars(select(Publication).order_by(Publication.created_at.desc()).limit(100)).all()
     return [
@@ -193,7 +193,10 @@ def schedule_queue(db: Session = Depends(get_db), settings: Settings = Depends(g
 
 @router.post("/conversions/import", dependencies=[Depends(require_admin)])
 async def conversion_import(
-    file: UploadFile = File(...), provider: str = "csv", db: Session = Depends(get_db)
+    file: UploadFile = File(...),
+    provider: str = Query("csv", min_length=1, max_length=40, pattern=r"^[a-z0-9_-]+$"),
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
 ) -> dict[str, int]:
     if file.content_type not in {
         "text/csv",
@@ -202,12 +205,15 @@ async def conversion_import(
     }:
         raise HTTPException(415, "Upload a CSV file")
     try:
-        return import_conversion_csv(db, await file.read(), provider)
+        data = await file.read(settings.max_upload_bytes + 1)
+        if len(data) > settings.max_upload_bytes:
+            raise HTTPException(413, "CSV file exceeds the configured upload limit")
+        return import_conversion_csv(db, data, provider)
     except (ValueError, UnicodeDecodeError) as exc:
         raise HTTPException(422, str(exc)) from exc
 
 
-@router.get("/costs")
+@router.get("/costs", dependencies=[Depends(require_admin)])
 def costs(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     rows = db.scalars(select(Cost).order_by(Cost.incurred_at.desc()).limit(200)).all()
     return [
@@ -233,12 +239,12 @@ def add_cost(kind: str, amount: Decimal, db: Session = Depends(get_db)) -> dict[
     return {"id": row.id}
 
 
-@router.post("/unit-economics")
+@router.post("/unit-economics", dependencies=[Depends(require_admin)])
 def unit_economics(payload: UnitEconomicsInput) -> dict[str, Decimal]:
     return calculate_unit_economics(payload)
 
 
-@router.get("/experiments")
+@router.get("/experiments", dependencies=[Depends(require_admin)])
 def experiments(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     return [
         {
@@ -253,7 +259,7 @@ def experiments(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     ]
 
 
-@router.get("/strategy")
+@router.get("/strategy", dependencies=[Depends(require_admin)])
 def strategy(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     rows = db.scalars(select(StrategySnapshot).order_by(StrategySnapshot.created_at.desc()).limit(30)).all()
     return [
@@ -268,32 +274,32 @@ def strategy(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     ]
 
 
-@router.get("/reports/weekly")
+@router.get("/reports/weekly", dependencies=[Depends(require_admin)])
 def weekly_report(db: Session = Depends(get_db)) -> dict[str, Any]:
     return weekly_business_report(db)
 
 
-@router.get("/reports/search-strategy")
+@router.get("/reports/search-strategy", dependencies=[Depends(require_admin)])
 def search_strategy_report(db: Session = Depends(get_db)) -> dict[str, Any]:
     return weekly_search_strategy_report(db)
 
 
-@router.get("/seo/keywords")
+@router.get("/seo/keywords", dependencies=[Depends(require_admin)])
 def seo_keywords(limit: int = Query(100, ge=1, le=500), db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     return keyword_summary(db, limit=limit)
 
 
-@router.get("/seo/taxonomy")
+@router.get("/seo/taxonomy", dependencies=[Depends(require_admin)])
 def seo_taxonomy(db: Session = Depends(get_db)) -> dict[str, Any]:
     return seo_taxonomy_summary(db)
 
 
-@router.get("/seo/analytics")
+@router.get("/seo/analytics", dependencies=[Depends(require_admin)])
 def seo_analytics(db: Session = Depends(get_db)) -> dict[str, Any]:
     return seo_commercial_analytics(db)
 
 
-@router.get("/seo/content-briefs")
+@router.get("/seo/content-briefs", dependencies=[Depends(require_admin)])
 def content_briefs(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     briefs = db.scalars(select(ContentBrief).order_by(ContentBrief.created_at.desc()).limit(100)).all()
     output: list[dict[str, Any]] = []
@@ -325,7 +331,7 @@ def content_briefs(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     return output
 
 
-@router.get("/seo/experiments")
+@router.get("/seo/experiments", dependencies=[Depends(require_admin)])
 def seo_experiments(
     db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
@@ -371,7 +377,7 @@ def seo_experiments(
     return output
 
 
-@router.get("/opportunities")
+@router.get("/opportunities", dependencies=[Depends(require_admin)])
 def opportunities(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     return opportunity_feed(db)
 
@@ -384,12 +390,12 @@ def refresh_opportunity_feed(
     return {"scored": len(rows), "optimization_target": "attributable_profit"}
 
 
-@router.get("/affiliate-programs")
+@router.get("/affiliate-programs", dependencies=[Depends(require_admin)])
 def affiliate_programs(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     return affiliate_program_rows(db)
 
 
-@router.get("/affiliate-programs/discovery-sources")
+@router.get("/affiliate-programs/discovery-sources", dependencies=[Depends(require_admin)])
 def affiliate_discovery_sources() -> list[dict[str, Any]]:
     return discovery_source_catalog()
 
@@ -404,7 +410,7 @@ def rescore_programs(db: Session = Depends(get_db)) -> dict[str, int]:
     return {"scored": rescore_affiliate_programs(db)}
 
 
-@router.get("/watchlists")
+@router.get("/watchlists", dependencies=[Depends(require_admin)])
 def watchlists(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     rows = db.scalars(select(ProductWatchlist).order_by(ProductWatchlist.created_at.desc())).all()
     return [
@@ -475,7 +481,7 @@ def onboarding(payload: OnboardingInput, db: Session = Depends(get_db)) -> dict[
     return {"configured": True, "version": row.version, "secrets_stored": False}
 
 
-@router.get("/settings")
+@router.get("/settings", dependencies=[Depends(require_admin)])
 def public_settings(settings: Settings = Depends(get_settings)) -> dict[str, Any]:
     return {
         "business_name": settings.business_name,
@@ -493,7 +499,7 @@ def public_settings(settings: Settings = Depends(get_settings)) -> dict[str, Any
     }
 
 
-@router.get("/system-health")
+@router.get("/system-health", dependencies=[Depends(require_admin)])
 def system_health(db: Session = Depends(get_db)) -> dict[str, Any]:
     queue_length = int(
         db.scalar(select(func.count(ContentVariant.id)).where(ContentVariant.status.in_(["approved", "scheduled"])))
@@ -617,6 +623,50 @@ def pinterest_boards(settings: Settings = Depends(get_settings), db: Session = D
 
         return PinterestPublisher(settings, _stored_pinterest_token(db, settings)).discover_destinations()
     except (ValueError, PermissionError, httpx.HTTPError) as exc:
+        raise HTTPException(409, str(exc)) from exc
+
+
+@router.post("/integrations/pinterest/boards/provision", dependencies=[Depends(require_admin)])
+def provision_pinterest_boards(
+    settings: Settings = Depends(get_settings), db: Session = Depends(get_db)
+) -> dict[str, Any]:
+    """Idempotently create configured taxonomy boards and persist their Pinterest IDs."""
+    try:
+        from apps.api.services.publishing import _stored_pinterest_token
+
+        publisher = PinterestPublisher(settings, _stored_pinterest_token(db, settings))
+        remote = publisher.discover_destinations()
+        remote_by_name = {
+            str(item.get("name", "")).strip().casefold(): item
+            for item in remote
+            if item.get("id") and item.get("name")
+        }
+        created: list[str] = []
+        linked: list[str] = []
+        local_boards = db.scalars(
+            select(PinterestBoard).where(PinterestBoard.status == "active").order_by(PinterestBoard.name)
+        ).all()
+        for board in local_boards:
+            match = remote_by_name.get(board.name.strip().casefold())
+            if match is None:
+                match = publisher.create_board(board.name, board.description)
+                remote_by_name[board.name.strip().casefold()] = match
+                created.append(board.name)
+            external_id = match.get("id")
+            if not isinstance(external_id, str) or not external_id:
+                raise ValueError(f"Pinterest did not return an ID for board {board.name}")
+            if board.external_id != external_id:
+                board.external_id = external_id
+                linked.append(board.name)
+                db.commit()
+        return {
+            "configured": len(local_boards),
+            "created": created,
+            "linked": linked,
+            "idempotent": True,
+        }
+    except (ValueError, PermissionError, httpx.HTTPError) as exc:
+        db.rollback()
         raise HTTPException(409, str(exc)) from exc
 
 
