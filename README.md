@@ -70,6 +70,11 @@ npm run build:web
 
 ## Architecture at a glance
 
+The web application now serves the public **Workspace Signal** publication at
+`/`, including ten launch guides, editorial/legal pages, sitemap, and robots
+controls. DealForge operations remain under routes such as `/overview` and are
+protected by `DASHBOARD_USER` and `DASHBOARD_PASSWORD` in production.
+
 ```mermaid
 flowchart LR
   P["Product providers\nMock · CSV · JSON · future APIs"] --> I["Ingestion + price observations"]
@@ -131,7 +136,8 @@ and conversions. See [Paid promotion](/Users/radalzubi/Documents/ChatGPT/Affilia
 
 ## Recommended initial niche and 30-day test
 
-Start with **small-space desk setup deals** in the US. It is visual, problem-led,
+Start with **small-space desk setups** as the first content cluster inside the broader
+**US home-office and workspace upgrades** niche. It is visual, problem-led,
 evergreen, bundle-friendly, and narrower than generic tech deals.
 
 - Days 1–7: 2 Pins/day, manual approval, 20–30 products, no ads. Test

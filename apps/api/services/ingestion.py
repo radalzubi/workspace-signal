@@ -25,7 +25,7 @@ class ProductProvider(ABC):
 
 
 class MockProductProvider(ProductProvider):
-    def __init__(self, niche: str = "small-space desk setup deals") -> None:
+    def __init__(self, niche: str = "US home-office and workspace upgrades") -> None:
         self.niche = niche
 
     def fetch(self) -> list[ProductObservation]:

@@ -27,8 +27,8 @@ class Settings(BaseSettings):
     admin_api_key: SecretStr = SecretStr("demo-admin-change-me")
     allowed_origins: str = "http://localhost:3000"
 
-    business_name: str = "Compact Desk Finds"
-    niche: str = "small-space desk setup deals"
+    business_name: str = "Workspace Signal"
+    niche: str = "US home-office and workspace upgrades"
     target_country: str = "US"
     currency: str = "USD"
     min_price: Decimal = Decimal("15")

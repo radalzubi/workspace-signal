@@ -4,7 +4,8 @@
 
 Build a Pinterest-first affiliate deal operating system that is useful with no
 credentials and becomes live by swapping provider configuration. The first
-recommended niche is **small-space desk setup deals**: it has visual purchase
+recommended launch cluster is **small-space desk setup deals** inside the broader
+**US home-office and workspace upgrades** niche: it has visual purchase
 intent, evergreen discovery behavior, broad price bands, and repeatable bundles.
 
 ## Architecture

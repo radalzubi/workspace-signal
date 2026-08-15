@@ -1,5 +1,33 @@
 # Deployment
 
+## Workspace Signal public-site launch
+
+`workspacesignal.com` is the public publication. The Next.js app serves the
+homepage, guide library, legal pages, sitemap, and robots policy as static or
+statically generated pages. DealForge remains under operational routes such as
+`/overview` and is protected by HTTP Basic authentication in production.
+
+Before connecting the domain:
+
+1. Create `hello@workspacesignal.com` and verify that it can receive mail.
+2. Deploy `apps/web` to a Next.js-compatible host. Do not deploy the API publicly
+   merely to launch the editorial site.
+3. Configure strong, unique `DASHBOARD_USER` and `DASHBOARD_PASSWORD` secrets in
+   the hosting provider. If they are absent, operational routes fail closed with
+   HTTP 503 in production.
+4. Add both `workspacesignal.com` and `www.workspacesignal.com` to the hosting
+   project. Make the apex domain canonical.
+5. In Namecheap Advanced DNS, add only the records shown by the selected host.
+   Remove parking or redirect records that conflict with those values. Do not
+   copy DNS values from an unrelated tutorial.
+6. Wait for DNS and managed TLS validation, then verify `/`, `/guides`,
+   `/privacy`, `/affiliate-disclosure`, `/robots.txt`, and `/sitemap.xml` over
+   HTTPS.
+7. Confirm `/overview` returns an authentication challenge and cannot be indexed.
+
+Do not expose the FastAPI service until its production network boundary,
+authentication, database, Redis, backups, and secrets have been configured.
+
 ## Lean architecture
 
 For an early single-founder operation, use one 2–4 vCPU Linux VPS for Docker
@@ -38,4 +66,3 @@ plans](https://www.hetzner.com/cloud/).
 - Pinterest/affiliate terms and credentials validated; disclosures reviewed.
 - AI/ad budgets and invoice alerts set at both application and vendor levels.
 - Container images pinned/scanned; CI green; migration rollback understood.
-

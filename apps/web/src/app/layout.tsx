@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./public.css";
 
 export const metadata: Metadata = {
-  title: "DealForge — Affiliate operating system",
-  description: "Profit-first deal discovery, content production and Pinterest operations.",
+  metadataBase: new URL("https://workspacesignal.com"),
+  title: { default: "Workspace Signal", template: "%s — Workspace Signal" },
+  description: "Independent workspace guides, practical comparisons, and verified deal context for home offices.",
+  openGraph: { siteName: "Workspace Signal", type: "website", locale: "en_US" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

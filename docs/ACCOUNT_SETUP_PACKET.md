@@ -12,7 +12,7 @@ inside each approved account always takes precedence.
 
 Do not apply to twenty programs at once. Use this launch sequence:
 
-1. Publish the `Compact Desk Finds` editorial site on an owned domain.
+1. Publish the `Workspace Signal` editorial site at `workspacesignal.com`.
 2. Create an Impact publisher account.
 3. Apply to Target, Anker, and UPLIFT through Impact.
 4. Apply directly to Humanscale and Grovemade.
@@ -173,12 +173,12 @@ inference as permission.
 ## Prepared email for each affiliate manager
 
 ```text
-Subject: Pinterest, product-feed and tracking permissions — Compact Desk Finds
+Subject: Pinterest, product-feed and tracking permissions — Workspace Signal
 
 Hello,
 
-I operate Compact Desk Finds, a US-focused editorial product-discovery site for
-small-space desks and home offices. We publish original visual guides,
+I operate Workspace Signal, a US-focused editorial product-discovery site for
+home offices and workspaces. We publish original visual guides,
 comparisons, budget roundups and verified deal analysis. Organic Pinterest is a
 primary discovery channel, while every recommendation links to relevant,
 disclosure-compliant content or an approved merchant destination.
@@ -205,8 +205,8 @@ content contains a clear disclosure.
 
 Thank you,
 [LEGAL OR BUSINESS NAME]
-Compact Desk Finds
-[DOMAIN]
+Workspace Signal
+https://workspacesignal.com
 [PINTEREST PROFILE URL]
 ```
 
@@ -215,16 +215,16 @@ Compact Desk Finds
 Use this for Impact, CJ, Rakuten, and merchant-direct applications.
 
 ```text
-Display name: Compact Desk Finds
+Display name: Workspace Signal
 Model: Content publisher / editorial product discovery
 
 Short description:
-Compact Desk Finds helps US consumers build functional workspaces in small
+Workspace Signal helps US consumers build functional workspaces in small
 apartments and home offices through original visual guides, product comparisons,
 budget roundups and verified deal analysis.
 
 Long description:
-Compact Desk Finds is a US-focused editorial discovery property for people
+Workspace Signal is a US-focused editorial discovery property for people
 building functional workspaces in small apartments and home offices. We publish
 original visual guides, comparisons, budget roundups and verified deal analysis
 for monitor arms, compact desks, laptop stands, cable management, lighting,
@@ -291,9 +291,9 @@ https://help.pinterest.com/en/business/article/get-a-business-account
 ### Proposed profile
 
 ```text
-Profile name: Compact Desk Finds
-Username: compactdeskfinds (or the nearest available variation)
-Website: https://[DOMAIN]
+Profile name: Workspace Signal
+Username: workspacesignal (or the nearest available variation)
+Website: https://workspacesignal.com
 Country: target the United States market, but use the real legal country in all
 account and tax information
 Bio: Small-space desk ideas, honest comparisons, verified deals and practical
@@ -363,12 +363,12 @@ https://help.pinterest.com/en-gb/business/article/install-the-pinterest-tag
 
 ```text
 App name: DealForge Publisher
-Company/app website: https://[DOMAIN]
-Privacy policy URL: https://[DOMAIN]/privacy
+Company/app website: https://workspacesignal.com
+Privacy policy URL: https://workspacesignal.com/privacy
 
 App description:
 DealForge Publisher is an internal content-management application used only by
-Compact Desk Finds to manage its own Pinterest Business presence. It creates and
+Workspace Signal to manage its own Pinterest Business presence. It creates and
 publishes original Pins linking to relevant content on our owned domain, reads
 our owned boards and Pins, and retrieves organic performance metrics so we can
 measure content relevance and outbound traffic. The application does not collect
@@ -376,7 +376,7 @@ Pinterest passwords, save third-party Pins, sell Pinterest data, create fake
 engagement or operate multiple affiliate accounts.
 
 Intended users:
-One internal operator managing the Compact Desk Finds Pinterest Business account.
+One internal operator managing the Workspace Signal Pinterest Business account.
 
 Requested use cases:
 Read owned boards; create original Pins on owned boards; read owned Pins; retrieve
