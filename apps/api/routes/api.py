@@ -44,6 +44,7 @@ from apps.api.schemas import (
     ContentOut,
     DealOut,
     OnboardingInput,
+    ProductObservation,
     ProductOut,
     QueueUpdate,
     UnitEconomicsInput,
@@ -67,6 +68,7 @@ from apps.api.services.analytics import (
 )
 from apps.api.services.demo import bootstrap_demo
 from apps.api.services.economics import calculate_unit_economics
+from apps.api.services.ingestion import persist_observations
 from apps.api.services.opportunities import evaluate_watchlists, opportunity_feed, refresh_opportunities
 from apps.api.services.optimization import create_daily_strategy, detect_winners
 from apps.api.services.publishing import PinterestPublisher, publish_variant
@@ -96,6 +98,12 @@ def get_overview(db: Session = Depends(get_db)) -> dict[str, Any]:
 @router.get("/products", response_model=list[ProductOut], dependencies=[Depends(require_admin)])
 def products(limit: int = Query(100, ge=1, le=500), db: Session = Depends(get_db)) -> list[Product]:
     return list(db.scalars(select(Product).order_by(Product.created_at.desc()).limit(limit)).all())
+
+
+@router.post("/products/import", dependencies=[Depends(require_admin)])
+def import_products(payload: list[ProductObservation], db: Session = Depends(get_db)) -> dict[str, int]:
+    """Import fact-grounded product observations from an approved or reviewed source."""
+    return {"imported": len(persist_observations(db, payload))}
 
 
 @router.get("/deals", response_model=list[DealOut], dependencies=[Depends(require_admin)])
@@ -637,9 +645,7 @@ def provision_pinterest_boards(
         publisher = PinterestPublisher(settings, _stored_pinterest_token(db, settings))
         remote = publisher.discover_destinations()
         remote_by_name = {
-            str(item.get("name", "")).strip().casefold(): item
-            for item in remote
-            if item.get("id") and item.get("name")
+            str(item.get("name", "")).strip().casefold(): item for item in remote if item.get("id") and item.get("name")
         }
         created: list[str] = []
         linked: list[str] = []
