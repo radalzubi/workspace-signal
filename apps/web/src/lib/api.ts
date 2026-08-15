@@ -2,7 +2,12 @@ export const API_INTERNAL_URL = process.env.API_INTERNAL_URL ?? "http://localhos
 export const API_PUBLIC_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export async function apiGet<T>(path: string): Promise<T> {
+  const adminKey = process.env.ADMIN_API_KEY ?? "";
+  if (adminKey.length < 32 || adminKey === "demo-admin-change-me") {
+    throw new Error("Private API access is not configured");
+  }
   const response = await fetch(`${API_INTERNAL_URL}/api/v1${path}`, {
+    headers: { Authorization: `Bearer ${adminKey}` },
     cache: "no-store",
     signal: AbortSignal.timeout(8_000),
   });
