@@ -11,6 +11,7 @@ os.environ.setdefault("DEMO_MODE", "true")
 os.environ.setdefault("DRY_RUN", "true")
 os.environ.setdefault("AUTO_PUBLISH", "false")
 os.environ.setdefault("ADMIN_API_KEY", "test-admin-token")
+os.environ["MEDIA_ROOT"] = "media/test-generated"
 
 from apps.api.db import models  # noqa: E402,F401
 from apps.api.db.session import Base  # noqa: E402
