@@ -14,9 +14,17 @@ export const metadata: Metadata = {
   },
 };
 
+const impactVerificationMeta = {
+  name: "impact-site-verification",
+  value: "4152e211-aa50-48d8-a061-f38bc85aeb7d",
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        <meta {...impactVerificationMeta} />
+      </head>
       <body>{children}</body>
     </html>
   );
