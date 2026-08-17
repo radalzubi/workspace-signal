@@ -11,6 +11,10 @@ clusters, relevant-board selection, grounded SEO briefs, keyword-to-profit
 attribution, affiliate-program research/scoring, confidence-aware product
 opportunities, price/discount-band learning, watchlists, and guarded SEO tests.
 
+The repository also includes the isolated **Case Lantern** TikTok draft
+workflow: sourced story briefs, claim-level validation, human approval, and
+versioned draft export. See [docs/CASE_LANTERN_AUTOMATION.md](docs/CASE_LANTERN_AUTOMATION.md).
+
 The default experience is safe and credential-free:
 
 - `DEMO_MODE=true` seeds realistic products, 90 days of observed prices, deals,

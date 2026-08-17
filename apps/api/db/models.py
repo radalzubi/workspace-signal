@@ -555,3 +555,85 @@ class KeywordPerformance(Base):
     period_end: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
     source: Mapped[str] = mapped_column(String(80), default="derived")
     confidence: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+
+
+class MediaBrand(TimestampMixin, Base):
+    __tablename__ = "media_brands"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    name: Mapped[str] = mapped_column(String(160))
+    slug: Mapped[str] = mapped_column(String(100), unique=True, index=True)
+    platform: Mapped[str] = mapped_column(String(40), default="tiktok")
+    handle: Mapped[str] = mapped_column(String(100), index=True)
+    niche: Mapped[str] = mapped_column(String(200))
+    audience: Mapped[str] = mapped_column(String(300))
+    bio: Mapped[str] = mapped_column(String(300))
+    status: Mapped[str] = mapped_column(String(32), default="active", index=True)
+    brand_config: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    human_approval_required: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class StoryProject(TimestampMixin, Base):
+    __tablename__ = "story_projects"
+    __table_args__ = (Index("ix_story_projects_queue", "status", "scheduled_for"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    brand_id: Mapped[str] = mapped_column(ForeignKey("media_brands.id", ondelete="CASCADE"), index=True)
+    title: Mapped[str] = mapped_column(String(300))
+    slug: Mapped[str] = mapped_column(String(160), unique=True, index=True)
+    story_type: Mapped[str] = mapped_column(String(60), default="historical_case")
+    status: Mapped[str] = mapped_column(String(32), default="research", index=True)
+    hook: Mapped[str] = mapped_column(String(400))
+    synopsis: Mapped[str] = mapped_column(Text)
+    script: Mapped[str] = mapped_column(Text)
+    caption: Mapped[str] = mapped_column(Text)
+    duration_seconds: Mapped[int] = mapped_column(Integer, default=75)
+    risk_level: Mapped[str] = mapped_column(String(32), default="low")
+    factual_confidence: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    quality_report: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    visual_plan: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
+    voice_config: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    media_uri: Mapped[str | None] = mapped_column(Text)
+    export_uri: Mapped[str | None] = mapped_column(Text)
+    approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    scheduled_for: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class StorySource(TimestampMixin, Base):
+    __tablename__ = "story_sources"
+    __table_args__ = (UniqueConstraint("project_id", "url", name="uq_story_source_url"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    project_id: Mapped[str] = mapped_column(ForeignKey("story_projects.id", ondelete="CASCADE"), index=True)
+    url: Mapped[str] = mapped_column(Text)
+    title: Mapped[str] = mapped_column(String(300))
+    publisher: Mapped[str] = mapped_column(String(160))
+    source_type: Mapped[str] = mapped_column(String(60), index=True)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    retrieved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    credibility_score: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
+    verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    notes: Mapped[str] = mapped_column(Text, default="")
+
+
+class StoryClaim(TimestampMixin, Base):
+    __tablename__ = "story_claims"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    project_id: Mapped[str] = mapped_column(ForeignKey("story_projects.id", ondelete="CASCADE"), index=True)
+    claim_text: Mapped[str] = mapped_column(Text)
+    source_ids: Mapped[list[str]] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(32), default="supported", index=True)
+    risk_category: Mapped[str] = mapped_column(String(60), default="historical_fact")
+    notes: Mapped[str] = mapped_column(Text, default="")
+
+
+class SocialPublication(TimestampMixin, Base):
+    __tablename__ = "social_publications"
+    __table_args__ = (UniqueConstraint("platform", "idempotency_key", name="uq_social_publication_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    project_id: Mapped[str] = mapped_column(ForeignKey("story_projects.id", ondelete="CASCADE"), index=True)
+    platform: Mapped[str] = mapped_column(String(40), default="tiktok", index=True)
+    mode: Mapped[str] = mapped_column(String(20), default="draft")
+    status: Mapped[str] = mapped_column(String(32), default="pending", index=True)
+    idempotency_key: Mapped[str] = mapped_column(String(100))
+    external_id: Mapped[str | None] = mapped_column(String(160))
+    external_url: Mapped[str | None] = mapped_column(Text)
+    error: Mapped[str | None] = mapped_column(Text)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

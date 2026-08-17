@@ -67,6 +67,20 @@ class Settings(BaseSettings):
     pinterest_board_id: str | None = None
     pinterest_redirect_uri: str = "http://localhost:8000/api/v1/integrations/pinterest/callback"
 
+    # Case Lantern is an isolated, human-reviewed short-form video workflow.
+    case_lantern_enabled: bool = False
+    case_lantern_brand: str = "Case Lantern"
+    case_lantern_handle: str = "caselantern"
+    case_lantern_human_approval_required: bool = True
+    case_lantern_posts_per_day: int = 1
+    case_lantern_min_sources: int = 2
+    case_lantern_min_words: int = 160
+    case_lantern_max_words: int = 225
+    tiktok_client_key: str | None = None
+    tiktok_client_secret: SecretStr | None = None
+    tiktok_redirect_uri: str = "http://localhost:8000/api/v1/integrations/tiktok/callback"
+    tiktok_posting_mode: str = "draft"
+
     enable_tracking_redirect: bool = True
     anonymization_salt: SecretStr = SecretStr("demo-salt-change-me")
     enable_paid_ads: bool = False
@@ -100,6 +114,13 @@ class Settings(BaseSettings):
             raise ValueError("MAX_POSTS_PER_DAY must be between 1 and 20")
         return value
 
+    @field_validator("case_lantern_posts_per_day")
+    @classmethod
+    def sensible_case_lantern_limit(cls, value: int) -> int:
+        if not 1 <= value <= 3:
+            raise ValueError("CASE_LANTERN_POSTS_PER_DAY must be between 1 and 3")
+        return value
+
     @model_validator(mode="after")
     def valid_ranges(self) -> Settings:
         if self.min_price >= self.max_price:
@@ -110,6 +131,10 @@ class Settings(BaseSettings):
             raise ValueError("Paid ads require all hard budgets to be positive")
         if self.max_upload_bytes < 1024 or self.max_upload_bytes > 25 * 1024 * 1024:
             raise ValueError("MAX_UPLOAD_BYTES must be between 1 KiB and 25 MiB")
+        if self.case_lantern_min_words >= self.case_lantern_max_words:
+            raise ValueError("CASE_LANTERN_MIN_WORDS must be less than CASE_LANTERN_MAX_WORDS")
+        if self.tiktok_posting_mode not in {"draft", "direct"}:
+            raise ValueError("TIKTOK_POSTING_MODE must be draft or direct")
         if self.environment.lower() == "production":
             admin_key = self.admin_api_key.get_secret_value()
             salt = self.anonymization_salt.get_secret_value()
@@ -127,6 +152,8 @@ class Settings(BaseSettings):
                 raise ValueError("Production ALLOWED_ORIGINS cannot contain a wildcard")
             if "*" in self.hosts:
                 raise ValueError("Production ALLOWED_HOSTS cannot contain a wildcard")
+            if not self.case_lantern_human_approval_required:
+                raise ValueError("Production Case Lantern requires human approval")
         return self
 
     @property

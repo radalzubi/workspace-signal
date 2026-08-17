@@ -36,6 +36,7 @@ def _client(db: Session) -> TestClient:
         "/api/v1/watchlists",
         "/api/v1/settings",
         "/api/v1/system-health",
+        "/api/v1/case-lantern/stories",
     ],
 )
 def test_operational_reads_require_admin(db: Session, path: str) -> None:

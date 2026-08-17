@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Economics } from "@/components/Economics";
 import { AffiliatePrograms } from "@/components/AffiliatePrograms";
+import { CaseLantern, type StoryProject } from "@/components/CaseLantern";
 import { Onboarding } from "@/components/Onboarding";
 import { OpportunityFeed, type Opportunity } from "@/components/OpportunityFeed";
 import { Overview, type OverviewData } from "@/components/Overview";
@@ -47,6 +48,8 @@ export default async function SectionPage({ params }: { params: Params }) {
       apiGet<Parameters<typeof AffiliatePrograms>[0]["sources"]>("/affiliate-programs/discovery-sources"),
     ]);
     body = <AffiliatePrograms programs={programs} sources={sources} />;
+  } else if (section === "case-lantern") {
+    body = <CaseLantern initial={await apiGet<StoryProject[]>("/case-lantern/stories")} settings={settings} />;
   } else if (section === "strategy-report") {
     body = <StrategyReport report={await apiGet<Parameters<typeof StrategyReport>[0]["report"]>("/reports/search-strategy")} />;
   } else {

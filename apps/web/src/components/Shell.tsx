@@ -6,6 +6,7 @@ const navigation = [
   ["content", "Content"], ["content-queue", "Content Queue"], ["published", "Published"],
   ["analytics", "Analytics"], ["revenue", "Revenue"], ["experiments", "Experiments"],
   ["campaigns", "Campaigns"], ["costs", "Costs"], ["settings", "Settings"],
+  ["case-lantern", "Case Lantern"],
   ["strategy-report", "Strategy Report"], ["watchlists", "Watchlists"],
   ["system-health", "System Health"]
 ] as const;
@@ -30,6 +31,6 @@ export function Shell({ section, children, demo = true }: { section: string; chi
 }
 
 function navIcon(key: string) {
-  const icons: Record<string, string> = { overview: "◫", products: "◇", deals: "↘", opportunities: "◆", seo: "⌕", "affiliate-programs": "%", content: "✦", "content-queue": "≡", published: "✓", analytics: "⌁", revenue: "$", experiments: "⌬", campaigns: "◎", costs: "−", "strategy-report": "↗", watchlists: "◉", settings: "⚙", "system-health": "◉" };
+  const icons: Record<string, string> = { overview: "◫", products: "◇", deals: "↘", opportunities: "◆", seo: "⌕", "affiliate-programs": "%", content: "✦", "content-queue": "≡", published: "✓", analytics: "⌁", revenue: "$", experiments: "⌬", campaigns: "◎", costs: "−", "case-lantern": "◐", "strategy-report": "↗", watchlists: "◉", settings: "⚙", "system-health": "◉" };
   return icons[key] ?? "·";
 }

@@ -12,6 +12,7 @@ from apps.api.db.models import ContentVariant, Deal, JobRun
 from apps.api.db.session import SessionLocal
 from apps.api.services.affiliate import ensure_affiliate_link
 from apps.api.services.analytics import keyword_performance_report, refresh_board_performance
+from apps.api.services.case_lantern import create_pilot_story, validate_story
 from apps.api.services.deals import detect_deals
 from apps.api.services.demo import bootstrap_demo
 from apps.api.services.opportunities import evaluate_watchlists as evaluate_watchlist_rules
@@ -144,6 +145,33 @@ def evaluate_watchlists() -> dict[str, int]:
     db, run = _start("evaluate_watchlists")
     try:
         result = evaluate_watchlist_rules(db)
+        _finish(db, run, result)
+        return result
+    except Exception as exc:
+        _finish(db, run, {}, exc)
+        raise
+
+
+@celery_app.task(name="workers.tasks.case_lantern_daily_brief")  # type: ignore[untyped-decorator]
+def case_lantern_daily_brief() -> dict[str, object]:
+    """Create a sourced review item; never approve or publish it automatically."""
+    db, run = _start("case_lantern_daily_brief")
+    try:
+        if not settings.case_lantern_enabled:
+            result: dict[str, object] = {"status": "disabled", "created": 0}
+        else:
+            project = create_pilot_story(db, settings)
+            report = validate_story(db, project, settings)
+            project.quality_report = report
+            db.commit()
+            result = {
+                "status": project.status,
+                "created": 1,
+                "story_id": project.id,
+                "validation_passed": bool(report["passed"]),
+                "human_approval_required": True,
+                "public_auto_post": False,
+            }
         _finish(db, run, result)
         return result
     except Exception as exc:

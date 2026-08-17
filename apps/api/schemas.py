@@ -205,3 +205,8 @@ class WatchlistInput(BaseModel):
         if not any(data.get(field) for field in ("product_id", "merchant_id", "category")):
             raise ValueError("A product, merchant, or category target is required")
         return value
+
+
+class StoryAction(BaseModel):
+    action: Literal["approve", "reject", "regenerate", "export"]
+    reason: str | None = Field(default=None, max_length=500)

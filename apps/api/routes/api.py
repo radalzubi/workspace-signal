@@ -36,6 +36,7 @@ from apps.api.db.models import (
     Product,
     ProductWatchlist,
     Publication,
+    StoryProject,
     StrategySnapshot,
 )
 from apps.api.db.session import get_db
@@ -47,6 +48,7 @@ from apps.api.schemas import (
     ProductObservation,
     ProductOut,
     QueueUpdate,
+    StoryAction,
     UnitEconomicsInput,
     WatchlistInput,
 )
@@ -66,6 +68,7 @@ from apps.api.services.analytics import (
     weekly_business_report,
     weekly_search_strategy_report,
 )
+from apps.api.services.case_lantern import apply_story_action, create_pilot_story, story_rows
 from apps.api.services.demo import bootstrap_demo
 from apps.api.services.economics import calculate_unit_economics
 from apps.api.services.ingestion import persist_observations
@@ -502,8 +505,49 @@ def public_settings(settings: Settings = Depends(get_settings)) -> dict[str, Any
         "paid_ads_enabled": settings.enable_paid_ads,
         "ai_provider": settings.ai_provider,
         "pinterest_configured": bool(settings.pinterest_access_token and settings.pinterest_board_id),
+        "case_lantern_enabled": settings.case_lantern_enabled,
+        "case_lantern_brand": settings.case_lantern_brand,
+        "case_lantern_handle": settings.case_lantern_handle,
+        "case_lantern_human_approval_required": settings.case_lantern_human_approval_required,
+        "tiktok_configured": bool(settings.tiktok_client_key and settings.tiktok_client_secret),
+        "tiktok_posting_mode": settings.tiktok_posting_mode,
         "max_posts_per_day": settings.max_posts_per_day,
         "timezone": settings.timezone,
+    }
+
+
+@router.get("/case-lantern/stories", dependencies=[Depends(require_admin)])
+def case_lantern_stories(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+    return story_rows(db)
+
+
+@router.post("/case-lantern/pilot", dependencies=[Depends(require_admin)])
+def case_lantern_pilot(
+    db: Session = Depends(get_db), settings: Settings = Depends(get_settings)
+) -> dict[str, Any]:
+    project = create_pilot_story(db, settings)
+    return {"created": True, "story_id": project.id, "status": project.status}
+
+
+@router.patch("/case-lantern/stories/{story_id}", dependencies=[Depends(require_admin)])
+def case_lantern_story_action(
+    story_id: str,
+    payload: StoryAction,
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> dict[str, Any]:
+    project = db.get(StoryProject, story_id)
+    if project is None:
+        raise HTTPException(404, "Story not found")
+    try:
+        project = apply_story_action(db, project, payload.action, settings, payload.reason)
+    except ValueError as exc:
+        raise HTTPException(409, str(exc)) from exc
+    return {
+        "story_id": project.id,
+        "status": project.status,
+        "export_uri": project.export_uri,
+        "approved_at": project.approved_at,
     }
 
 

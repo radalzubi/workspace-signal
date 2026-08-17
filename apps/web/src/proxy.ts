@@ -48,6 +48,6 @@ export const config = {
     "/seo/:path*", "/affiliate-programs/:path*", "/content/:path*", "/content-queue/:path*",
     "/published/:path*", "/analytics/:path*", "/revenue/:path*", "/experiments/:path*",
     "/campaigns/:path*", "/costs/:path*", "/settings/:path*", "/strategy-report/:path*",
-    "/watchlists/:path*", "/system-health/:path*", "/api/proxy/:path*",
+    "/case-lantern/:path*", "/watchlists/:path*", "/system-health/:path*", "/api/proxy/:path*",
   ],
 };

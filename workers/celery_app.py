@@ -28,6 +28,10 @@ celery_app.conf.update(
             "task": "workers.tasks.evaluate_watchlists",
             "schedule": 3600.0,
         },
+        "case-lantern-daily-brief": {
+            "task": "workers.tasks.case_lantern_daily_brief",
+            "schedule": 86400.0,
+        },
     },
 )
 celery_app.autodiscover_tasks(["workers"])
