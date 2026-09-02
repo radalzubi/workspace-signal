@@ -252,8 +252,14 @@ def apply_story_action(
         project.quality_report = {**report, "rejection_reason": reason or "Rejected during human review."}
     elif action == "regenerate":
         project.status = "research"
+    elif action == "render":
+        if project.approved_at is None:
+            raise ValueError("Human approval is required before video rendering.")
+        from apps.api.services.case_lantern_render import render_story_video
+
+        render_story_video(db, project, settings)
     elif action == "export":
-        if project.status not in {"approved", "render_ready"} or project.approved_at is None:
+        if project.status not in {"approved", "video_ready", "render_ready"} or project.approved_at is None:
             raise ValueError("Human approval is required before export.")
         project.export_uri = export_story_package(db, project, settings)
         project.status = "render_ready"
@@ -291,7 +297,13 @@ def export_story_package(db: Session, project: StoryProject, settings: Settings)
         "script": project.script,
         "caption": project.caption,
         "visual_plan": project.visual_plan,
+        "media_uri": project.media_uri,
         "sources": [{"title": source.title, "url": source.url} for source in sources],
+        "disclosure": {
+            "ai_assisted_visuals": bool(project.media_uri),
+            "creator_ai_label_required": bool(project.media_uri),
+            "caption_text": "AI-assisted original illustrations and narration." if project.media_uri else None,
+        },
         "publishing": {
             "platform": "tiktok",
             "mode": "draft",

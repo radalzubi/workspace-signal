@@ -547,6 +547,7 @@ def case_lantern_story_action(
         "story_id": project.id,
         "status": project.status,
         "export_uri": project.export_uri,
+        "media_uri": project.media_uri,
         "approved_at": project.approved_at,
     }
 

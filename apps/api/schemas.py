@@ -208,5 +208,5 @@ class WatchlistInput(BaseModel):
 
 
 class StoryAction(BaseModel):
-    action: Literal["approve", "reject", "regenerate", "export"]
+    action: Literal["approve", "reject", "regenerate", "render", "export"]
     reason: str | None = Field(default=None, max_length=500)

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./public.css";
 import "./case-lantern.css";
+import "./tiktok.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://workspacesignal.com"),

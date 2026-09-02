@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from apps.api.core.config import Settings
 from apps.api.db.models import SocialPublication, StoryClaim
 from apps.api.services.case_lantern import apply_story_action, create_pilot_story, story_rows, validate_story
+from apps.api.services.case_lantern_render import _subtitle_chunks, _timestamp
 
 
 def _settings(tmp_path: Path) -> Settings:
@@ -44,6 +45,17 @@ def test_pilot_creation_is_idempotent(db: Session, tmp_path: Path) -> None:
 
     assert first.id == second.id
     assert len(story_rows(db)) == 1
+
+
+def test_render_helpers_keep_caption_cards_readable() -> None:
+    script = "A short opening sentence. This second sentence contains enough words to require two caption cards safely."
+
+    chunks = _subtitle_chunks(script, max_words=6)
+
+    assert chunks[0] == "A short opening sentence."
+    assert chunks[1] == "This second sentence contains enough words"
+    assert chunks[2] == "to require two caption cards safely."
+    assert _timestamp(65.432) == "00:01:05,432"
 
 
 def test_unsupported_claim_blocks_approval(db: Session, tmp_path: Path) -> None:

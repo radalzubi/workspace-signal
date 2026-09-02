@@ -45,6 +45,7 @@ export type StoryProject = {
   factual_confidence: number;
   quality_report: QualityReport;
   visual_plan: Array<{ seconds: string; asset: string; text: string }>;
+  media_uri: string | null;
   export_uri: string | null;
   approved_at: string | null;
   sources: StorySource[];
@@ -56,6 +57,7 @@ type ActionResult = {
   story_id?: string;
   status?: string;
   export_uri?: string | null;
+  media_uri?: string | null;
   approved_at?: string | null;
 };
 
@@ -82,7 +84,7 @@ export function CaseLantern({ initial, settings }: { initial: StoryProject[]; se
     setBusy(null);
   }
 
-  async function act(story: StoryProject, action: "approve" | "reject" | "regenerate" | "export") {
+  async function act(story: StoryProject, action: "approve" | "reject" | "regenerate" | "render" | "export") {
     let reason: string | null = null;
     if (action === "reject") {
       reason = window.prompt("Why should this story be rejected?", "Needs factual or editorial changes.");
@@ -101,10 +103,11 @@ export function CaseLantern({ initial, settings }: { initial: StoryProject[]; se
       setStories((current) => current.map((item) => item.id === story.id ? {
         ...item,
         status: result.status ?? item.status,
+        media_uri: result.media_uri ?? item.media_uri,
         export_uri: result.export_uri ?? item.export_uri,
         approved_at: result.approved_at ?? item.approved_at,
       } : item));
-      const label = action === "export" ? "Draft package created. Final upload still requires review." : `Story ${action}d.`;
+      const label = action === "export" ? "Draft package created. Final upload still requires review." : action === "render" ? "Vertical MP4 rendered and validated." : `Story ${action}d.`;
       setMessage(label);
     }
     setBusy(null);
@@ -159,10 +162,12 @@ export function CaseLantern({ initial, settings }: { initial: StoryProject[]; se
 
         <h3>Original visual plan</h3>
         <div className="case-visuals">{story.visual_plan.map((beat) => <div key={`${beat.seconds}-${beat.text}`}><b>{beat.seconds}</b><span>{beat.asset}</span><small>{beat.text}</small></div>)}</div>
+        {story.media_uri && <p className="case-export"><b>Rendered MP4:</b> {story.media_uri}</p>}
         {story.export_uri && <p className="case-export"><b>Draft package:</b> {story.export_uri}</p>}
         <div className="actions case-actions">
           <button onClick={() => act(story, "approve")} disabled={locked || !report.passed || Boolean(story.approved_at)}>Approve</button>
-          <button onClick={() => act(story, "export")} disabled={locked || !story.approved_at}>Export TikTok draft</button>
+          <button onClick={() => act(story, "render")} disabled={locked || !story.approved_at || Boolean(story.media_uri)}>Render vertical MP4</button>
+          <button onClick={() => act(story, "export")} disabled={locked || !story.approved_at || !story.media_uri}>Export TikTok package</button>
           <button className="ghost" onClick={() => act(story, "regenerate")} disabled={locked}>Request rewrite</button>
           <button className="ghost" onClick={() => act(story, "reject")} disabled={locked}>Reject</button>
         </div>
