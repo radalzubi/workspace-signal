@@ -49,8 +49,5 @@ export const config = {
     "/published/:path*", "/analytics/:path*", "/revenue/:path*", "/experiments/:path*",
     "/campaigns/:path*", "/costs/:path*", "/settings/:path*", "/strategy-report/:path*",
     "/case-lantern/:path*", "/watchlists/:path*", "/system-health/:path*", "/api/proxy/:path*",
-    "/tiktok-connect/:path*", "/api/v1/integrations/tiktok/connect/:path*",
-    "/api/v1/integrations/tiktok/session/:path*", "/api/v1/integrations/tiktok/drafts/:path*",
-    "/api/v1/integrations/tiktok/disconnect/:path*",
   ],
 };
