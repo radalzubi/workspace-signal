@@ -522,9 +522,7 @@ def case_lantern_stories(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
 
 
 @router.post("/case-lantern/pilot", dependencies=[Depends(require_admin)])
-def case_lantern_pilot(
-    db: Session = Depends(get_db), settings: Settings = Depends(get_settings)
-) -> dict[str, Any]:
+def case_lantern_pilot(db: Session = Depends(get_db), settings: Settings = Depends(get_settings)) -> dict[str, Any]:
     project = create_pilot_story(db, settings)
     return {"created": True, "story_id": project.id, "status": project.status}
 

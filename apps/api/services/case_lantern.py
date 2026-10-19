@@ -219,8 +219,14 @@ def story_rows(db: Session) -> list[dict[str, Any]]:
                 "export_uri": project.export_uri,
                 "approved_at": project.approved_at,
                 "sources": [
-                    {"id": source.id, "url": source.url, "title": source.title, "publisher": source.publisher,
-                     "source_type": source.source_type, "verified": source.verified}
+                    {
+                        "id": source.id,
+                        "url": source.url,
+                        "title": source.title,
+                        "publisher": source.publisher,
+                        "source_type": source.source_type,
+                        "verified": source.verified,
+                    }
                     for source in sources
                 ],
                 "claims": [
