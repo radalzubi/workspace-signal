@@ -10,7 +10,9 @@ from sqlalchemy.orm import Session
 os.environ.setdefault("DEMO_MODE", "true")
 os.environ.setdefault("DRY_RUN", "true")
 os.environ.setdefault("AUTO_PUBLISH", "false")
-os.environ.setdefault("ADMIN_API_KEY", "test-admin-token")
+# Forced, not defaulted: the tests authenticate with this exact token, and CI exports
+# its own ADMIN_API_KEY for the job, which used to win and turn admin calls into 401s.
+os.environ["ADMIN_API_KEY"] = "test-admin-token"
 os.environ["MEDIA_ROOT"] = "media/test-generated"
 
 from apps.api.db import models  # noqa: E402,F401
