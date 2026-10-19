@@ -23,7 +23,7 @@ def _ffmpeg_executable() -> str:
         import imageio_ffmpeg
     except ImportError as exc:  # pragma: no cover - exercised by deployment checks
         raise RuntimeError("FFmpeg is unavailable. Install imageio-ffmpeg or provide ffmpeg on PATH.") from exc
-    return imageio_ffmpeg.get_ffmpeg_exe()
+    return str(imageio_ffmpeg.get_ffmpeg_exe())
 
 
 def _probe_duration(ffmpeg: str, media_path: Path) -> float:
